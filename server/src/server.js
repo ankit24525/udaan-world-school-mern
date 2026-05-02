@@ -48,7 +48,13 @@ import ClassConfig from "./models/ClassConfig.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
+process.on("uncaughtException", (err) => {
+  console.error("🔥 UNCAUGHT EXCEPTION:", err);
+});
 
+process.on("unhandledRejection", (err) => {
+  console.error("🔥 UNHANDLED REJECTION:", err);
+});
 async function startServer() {
   try {
     // 🔥 CONNECT DB
@@ -77,10 +83,9 @@ async function startServer() {
     }
 
     // 🔥 START SERVER
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-
+   app.listen(process.env.PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${process.env.PORT}`);
+});v
   } catch (error) {
     console.error("❌ Server failed to start:", error);
     process.exit(1);

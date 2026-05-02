@@ -8,7 +8,7 @@ export function getUser(req, res, next) {
 
     if (!token) return next();
 
-    const decoded = jwt.verify(token, "secret123");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded; // { email }
 
