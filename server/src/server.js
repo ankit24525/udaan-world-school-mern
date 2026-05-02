@@ -47,7 +47,9 @@ import ClassConfig from "./models/ClassConfig.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT;
+    // 🔥 START SERVER
+const PORT = process.env.PORT || 5000;
+
 process.on("uncaughtException", (err) => {
   console.error("🔥 UNCAUGHT EXCEPTION:", err);
 });
@@ -82,9 +84,10 @@ async function startServer() {
       console.log("ℹ️ Classes already exist");
     }
 
-    // 🔥 START SERVER
-   app.listen(process.env.PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${process.env.PORT}`);
+
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
   } catch (error) {
     console.error("❌ Server failed to start:", error);
