@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-  withCredentials: true, // 🔥 VERY IMPORTANT (sends cookies automatically)
+  baseURL: import.meta.env.VITE_API_URL, // ✅ no fallback needed in production
+  withCredentials: true,
 });
 
+// 🔐 Add token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("adminToken");
 
@@ -15,6 +16,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// ⚠️ Handle auth errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
