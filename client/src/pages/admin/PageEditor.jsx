@@ -867,7 +867,7 @@ export default function PageEditor() {
       if (section.type === "documentsTable") {
         return {
           ...section,
-          items: [...(section.items || []), { name: "", fileUrl: "" }],
+          items: [...(section.items || []), { name: "", fileUrl: "", fileName: "", publicId: "", resourceType: "" }],
         };
       }
       if (section.type === "simpleTable") {
@@ -906,6 +906,32 @@ export default function PageEditor() {
         ...section,
         items: (section.items || []).map((item, index) =>
           index === itemIndex ? { ...item, [field]: value } : item
+        ),
+      };
+    });
+    updateSections(sections);
+  }
+
+  function updateSectionItemFields(sectionId, itemIndex, patch) {
+    const sections = (content.meta?.sections || []).map((section) => {
+      if (section.id !== sectionId) return section;
+      if (section.type === "eventGallery" || section.type === "managedGallery") {
+        const items = Array.from({ length: Math.max(section.items?.length || 0, itemIndex + 1) }, (_, index) => (
+          section.items?.[index] || { url: "", caption: "" }
+        ));
+
+        return {
+          ...section,
+          items: items.map((item, index) =>
+            index === itemIndex ? { ...item, ...patch } : item
+          ),
+        };
+      }
+
+      return {
+        ...section,
+        items: (section.items || []).map((item, index) =>
+          index === itemIndex ? { ...item, ...patch } : item
         ),
       };
     });
@@ -1500,6 +1526,7 @@ function SectionBuilder({
                   section={section}
                   onAddItem={onAddItem}
                   onUpdateItem={onUpdateItem}
+                  onUpdateItemFields={updateSectionItemFields}
                   onRemoveItem={onRemoveItem}
                   onUpdateSection={onUpdateSection}
                   onUpload={onUpload}
@@ -2169,6 +2196,7 @@ function DocumentsTableEditor({
   section,
   onAddItem,
   onUpdateItem,
+  onUpdateItemFields,
   onRemoveItem,
   onUpdateSection,
   onUpload,
@@ -2241,10 +2269,12 @@ function DocumentsTableEditor({
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                   onFile={async (file) => {
                     await onUpload(file, (url, resourceType, publicId, fileName) => {
-                      onUpdateItem(section.id, index, "fileUrl", url);
-                      onUpdateItem(section.id, index, "fileName", fileName || file.name);
-                      onUpdateItem(section.id, index, "publicId", publicId || "");
-                      onUpdateItem(section.id, index, "resourceType", resourceType || "");
+                      onUpdateItemFields(section.id, index, {
+                        fileUrl: url,
+                        fileName: fileName || file.name,
+                        publicId: publicId || "",
+                        resourceType: resourceType || "",
+                      });
                       setSuccessMap((prev) => ({
                         ...prev,
                         [`${section.id}-${index}`]: `${fileName || file.name} uploaded successfully`,
