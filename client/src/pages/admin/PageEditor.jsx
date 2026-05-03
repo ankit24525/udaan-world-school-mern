@@ -509,14 +509,14 @@ function buildFallbackPage(key) {
       },
     },
     homeChairman: {
-      eyebrow: "Chairman's Message",
+      eyebrow: "Director's Message",
       title: '"Creating a knowledge hub"',
       body:
         "At Udaan World School, we aim to ensure that students achieve their highest academic and personal potential while building a strong foundation rooted in Indian culture, society, and ideas.\n\nStudents at BIS must believe in themselves and their goals.",
       imageUrl: "/images/people/director.jpeg",
       meta: {
-        signatureName: "BHARAT GOYAL",
-        signatureRole: "Founder",
+        signatureName: "Naina Tiwari",
+        signatureRole: "Director",
       },
     },
     homeWhyChooseUs: {
@@ -645,6 +645,28 @@ function buildFallbackPage(key) {
 
 function isVideoUrl(url = "") {
   return /\.(mp4|webm|ogg)$/i.test(url) || url.includes("video/upload") || url.includes("youtube") || url.includes("youtu.be");
+}
+
+function formatPageKeyLabel(pageKey = "") {
+  return String(pageKey)
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[-_]/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function formatSectionIdLabel(sectionId = "", sectionType = "section") {
+  const raw = String(sectionId || sectionType)
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[-_]/g, " ")
+    .trim()
+    .toLowerCase();
+
+  return raw || "section";
+}
+
+function getAdminSectionLabel(pageKey, section) {
+  return `${formatPageKeyLabel(pageKey)} - ${formatSectionIdLabel(section.id, section.type)}`;
 }
 
 export default function PageEditor() {
@@ -937,12 +959,8 @@ export default function PageEditor() {
     };
 
     try {
-      if (pageId) {
-        await api.put(`/content/${pageId}`, payload);
-      } else {
-        const res = await api.post("/content", payload);
-        setPageId(res.data?._id || null);
-      }
+      const res = await api.post("/content", payload);
+      setPageId(res.data?._id || pageId || null);
 
       alert("Page saved successfully");
       navigate("/admin/content");
@@ -1310,7 +1328,7 @@ function SectionBuilder({
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-[#C3292D]">
-                  Section {index + 1}
+                  {getAdminSectionLabel(pageKey, section)}
                 </p>
                 <p className="text-sm text-gray-500">
                   Type: {section.type}
@@ -1441,7 +1459,7 @@ function SectionBuilder({
               {section.type === "managedGallery" && !immutableSectionIds.includes(section.id) && (
                 <div className="space-y-3">
                   <div className="rounded-xl border border-dashed bg-slate-50 p-4 text-sm text-slate-600">
-                    You can upload gallery items here from Website Pages, or manage reusable media from <span className="font-semibold">Admin - Gallery Management</span>. Both will show on the public gallery page.
+                    You can upload gallery items here from Pages, or manage reusable media from <span className="font-semibold">Admin - Gallery Management</span>. Both will show on the public gallery page.
                   </div>
                   <ManagedGalleryEditor
                     section={section}

@@ -5,11 +5,11 @@ const guideSections = [
   },
   {
     title: "2. Manage Website Content",
-    text: "Open Website Pages when you want to update page text, section headings, cards, images, CTAs and structured layouts like About, Chairman Message, Events, Academics and Facilities pages.",
+    text: "Open Pages when you want to update page text, section headings, cards, images, CTAs and structured layouts like About, Director Message, Events, Academics and Facilities pages.",
   },
   {
     title: "3. Use Gallery Management For Media",
-    text: "Use Gallery Management for photo, video and events gallery items. Use Website Pages for page text and layout, but use Gallery Management for the actual gallery media library.",
+    text: "Use Gallery Management for photo, video and events gallery items. Use Pages for page text and layout, but use Gallery Management for the actual gallery media library.",
   },
   {
     title: "4. Manage Students Carefully",
@@ -29,7 +29,7 @@ const quickActions = [
   "Update school email and social links from Settings",
   "Add events from Content -> Events",
   "Upload gallery media from Gallery Management",
-  "Edit public page sections from Content -> Website Pages",
+  "Edit public page sections from Content -> Pages",
   "Review admission enquiries from Admissions",
   "Review teacher applications from Staff & Careers",
 ];
@@ -73,7 +73,7 @@ export default function AdminGuidePage() {
             <div className="rounded-[28px] bg-cyan-50 p-6 shadow-lg ring-1 ring-slate-200">
               <h3 className="text-2xl font-black text-slate-900">Important Tip</h3>
               <p className="mt-4 text-slate-600 leading-8">
-                If you want to change how a public page looks, first check whether that page is controlled from Website Pages, Gallery Management, Events, Blogs, Facilities or Staff & Careers. This avoids editing the wrong section.
+                If you want to change how a public page looks, first check whether that page is controlled from Pages, Gallery Management, Events, Blogs, Facilities or Staff & Careers. This avoids editing the wrong section.
               </p>
             </div>
           </aside>

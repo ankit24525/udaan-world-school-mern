@@ -63,29 +63,42 @@ export default function Facilities() {
   );
 
   const facilities = useMemo(() => {
-    const map = new Map();
+    // Homepage cards should follow Website Pages ordering and count exactly.
+    // Backend facilities enrich matching cards, but should not append surprise extras here.
+    const dynamicMap = new Map(
+      dynamicFacilities.map((item) => [String(item.name || "").trim().toLowerCase(), item])
+    );
 
-    managedFacilities.forEach((item, index) => {
-      map.set(String(item.title).toLowerCase(), {
-        title: item.title,
-        image: item.image,
-        order: index,
-      });
+    return managedFacilities.map((item, index) => {
+      const match = dynamicMap.get(String(item.title).trim().toLowerCase());
+
+      return {
+        title: match?.name || item.title,
+        image: match?.image || item.image || fallbackFacilities.meta.items[index]?.image || fallbackFacilities.meta.items[0].image,
+      };
     });
-
-    dynamicFacilities.forEach((item, index) => {
-      const key = String(item.name || `facility-${index}`).toLowerCase();
-      const fallbackImage = managedFacilities[index % managedFacilities.length]?.image || fallbackFacilities.meta.items[0].image;
-
-      map.set(key, {
-        title: item.name || `Facility ${index + 1}`,
-        image: item.image || fallbackImage,
-        order: map.has(key) ? map.get(key).order : managedFacilities.length + index,
-      });
-    });
-
-    return [...map.values()].sort((a, b) => a.order - b.order);
   }, [managedFacilities, dynamicFacilities]);
+
+  if (section.__loading) {
+    return (
+      <section className="bg-white py-20">
+        <div className="containerx">
+          <div className="mb-8 flex items-end justify-between gap-6">
+            <div>
+              <div className="shadow-shimmer-line h-4 w-40" />
+              <div className="mt-3 shadow-shimmer-line h-12 w-72" />
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="shadow-shimmer-card h-[180px] md:h-[210px]" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-white py-20">

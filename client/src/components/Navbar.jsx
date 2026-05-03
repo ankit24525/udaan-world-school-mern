@@ -6,7 +6,7 @@ import { images, navItems } from "../data/siteData.js";
 import api from "../services/api";
 
 const defaultNotice =
-  "Admissions Open 2026 • Limited Seats Available • Smart Classes • Hostel Facility • Apply Now";
+  "Admissions Open 2026 • Limited Seats Available • Smart Classes • Apply Now";
 
 const defaultSettings = {
   contact: {
@@ -15,10 +15,35 @@ const defaultSettings = {
   social: {
     facebook: "https://www.facebook.com/udaanworldschool",
     instagram: "https://www.instagram.com/udaanworldschool",
-    linkedin: "https://www.linkedin.com/school/udaan-world-school",
     youtube: "https://www.youtube.com/@udaanworldschool",
   },
 };
+
+function FacebookIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.5 1.6-1.5H16.7V5c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.4-4.1 4.1V11H7.5v3h2.7v8h3.3Z" />
+    </svg>
+  );
+}
+
+function InstagramIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function YouTubeIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M21.6 7.2a2.9 2.9 0 0 0-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5a2.9 2.9 0 0 0-2 2A30.7 30.7 0 0 0 1.9 12c0 1.6.2 3.2.5 4.8a2.9 2.9 0 0 0 2 2c1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5a2.9 2.9 0 0 0 2-2c.3-1.6.5-3.2.5-4.8s-.2-3.2-.5-4.8ZM10 15.5v-7l6 3.5-6 3.5Z" />
+    </svg>
+  );
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -58,10 +83,9 @@ export default function Navbar() {
   const socialLinks = useMemo(
     () =>
       [
-        { label: "Facebook", short: "F", href: settings.social.facebook || "#" },
-        { label: "Instagram", short: "IG", href: settings.social.instagram || "#" },
-        { label: "LinkedIn", short: "IN", href: settings.social.linkedin || "#" },
-        { label: "YouTube", short: "YT", href: settings.social.youtube || "#" },
+        { label: "Facebook", icon: FacebookIcon, href: settings.social.facebook || "#" },
+        { label: "Instagram", icon: InstagramIcon, href: settings.social.instagram || "#" },
+        { label: "YouTube", icon: YouTubeIcon, href: settings.social.youtube || "#" },
       ].filter((item) => item.href && item.href !== "#"),
     [settings]
   );
@@ -105,9 +129,9 @@ export default function Navbar() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={item.label}
-                className="social-dot"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition duration-300 hover:-translate-y-1 hover:bg-cyan-400 hover:text-slate-950 hover:shadow-lg"
               >
-                {item.short}
+                <item.icon size={16} />
               </a>
             ))}
           </div>
@@ -149,7 +173,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <Link to="/admission-enquiry" className="hidden lg:inline-flex px-5 py-3 rounded-full blue-gradient text-white font-bold text-sm">
+          <Link to="/admission-enquiry" className="hidden lg:inline-flex px-5 py-3 rounded-full blue-gradient text-white font-bold text-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(14,116,144,0.32)]">
             Admission Enquiry
           </Link>
 

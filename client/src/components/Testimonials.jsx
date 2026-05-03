@@ -91,7 +91,7 @@ export default function Testimonials() {
         >
           <a
             href="/admission-enquiry"
-            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white shadow-xl"
+            className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(14,116,144,0.32)]"
           >
             Join Our Family
             <ArrowRight size={18} />

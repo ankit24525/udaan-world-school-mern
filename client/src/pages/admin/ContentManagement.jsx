@@ -16,10 +16,10 @@ import { managedPageSections } from "./contentRegistry.js";
 
 const tabConfig = {
   pages: {
-    label: "Website Pages",
+    label: "Pages",
     icon: FileText,
     backendType: "page",
-    emptyTitle: "No website pages available.",
+    emptyTitle: "No pages available.",
   },
   blogs: {
     label: "Blogs",
@@ -674,6 +674,27 @@ function getPagePreviewImage(key, item) {
   return pagePreviewImages[key] || "";
 }
 
+function humanizePageKey(value = "") {
+  return String(value || "")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function getPageGroupLabel(item) {
+  if (item?.key) {
+    return `${humanizePageKey(item.key)} Page`;
+  }
+
+  if (item?.title) {
+    return item.title.includes("Page") ? item.title : `${item.title} Page`;
+  }
+
+  return "Page";
+}
+
 function PagesGrid({ data, emptyText, onView, onEdit }) {
   if (!data.length) {
     return (
@@ -688,7 +709,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
       {data.map((item) => (
         <article
           key={item.id}
-          className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+          className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
         >
           <div className="relative h-44 bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-700">
             {item.previewImage ? (
@@ -701,7 +722,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
               <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
-                {item.group}
+                {getPageGroupLabel(item)}
               </span>
               <h3 className="mt-3 text-xl font-bold text-white">{item.title}</h3>
             </div>
@@ -734,14 +755,14 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
             <div className="flex gap-3">
               <button
                 onClick={() => onView(item)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md"
               >
                 <Eye size={16} />
                 View Editor
               </button>
               <button
                 onClick={() => onEdit(item)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#C3292D] px-4 py-3 text-sm font-medium text-white hover:bg-[#A01F23]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#C3292D] px-4 py-3 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-[#A01F23] hover:shadow-lg"
               >
                 <Edit size={16} />
                 Edit Page
@@ -801,7 +822,7 @@ function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
                 <td className="px-6 py-4 font-medium">{item.title}</td>
                 <td className="px-6 py-4">
                   {tab === "pages" ? (
-                    item.group || "Page"
+                    getPageGroupLabel(item)
                   ) : tab === "events" ? (
                     <div className="space-y-1">
                       <div>{item.type || "Event"}</div>

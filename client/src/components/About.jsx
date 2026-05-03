@@ -121,7 +121,7 @@ export default function About() {
             </Link>
             <Link
               to="/contact-us"
-              className="inline-flex items-center gap-3 rounded-full border border-slate-300 px-8 py-4 font-bold text-slate-900"
+              className="inline-flex items-center gap-3 rounded-full border border-slate-300 px-8 py-4 font-bold text-slate-900 transition duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-700 hover:shadow-[0_20px_40px_rgba(15,23,42,0.12)]"
             >
               Contact Us
               <ArrowRight size={18} />

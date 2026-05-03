@@ -1,5 +1,34 @@
 import Content from "../models/Content.js";
 
+function normalizeCloudinaryDocumentUrl(url = "") {
+  return String(url || "")
+    .trim()
+    .replace(/\/upload\/(?:[^/]+,)*fl_attachment,?/i, "/upload/")
+    .replace(/\/upload\/fl_attachment\//i, "/upload/")
+    .replace(/([^:]\/)\/+/g, "$1");
+}
+
+function buildCloudinaryDocumentCandidates(url = "") {
+  const normalized = normalizeCloudinaryDocumentUrl(url);
+  const candidates = [
+    normalized,
+    normalized.replace("/image/upload/", "/raw/upload/"),
+    normalized.replace("/raw/upload/", "/image/upload/"),
+    String(url || "").trim(),
+  ].filter(Boolean);
+
+  return [...new Set(candidates)];
+}
+
+async function fetchDocumentCandidate(url) {
+  return fetch(url, {
+    headers: {
+      "User-Agent": "UdaanWorldSchool/1.0",
+      Accept: "*/*",
+    },
+  });
+}
+
 export async function listContent(req, res) {
   const filter = {};
 
@@ -15,6 +44,44 @@ export async function getContent(req, res) {
   const item = await Content.findOne({ slug: req.params.slug });
   if (!item) return res.status(404).json({ message: "Content not found" });
   res.json(item);
+}
+
+export async function downloadContentFile(req, res) {
+  try {
+    const rawUrl = String(req.query.url || "").trim();
+    const downloadName = String(req.query.name || "document").trim() || "document";
+
+    if (!rawUrl || !/^https?:\/\//i.test(rawUrl)) {
+      return res.status(400).json({ message: "A valid file URL is required" });
+    }
+
+    const candidates = buildCloudinaryDocumentCandidates(rawUrl);
+    let upstream = null;
+    let lastStatus = 502;
+
+    for (const candidate of candidates) {
+      upstream = await fetchDocumentCandidate(candidate);
+      lastStatus = upstream.status;
+      if (upstream.ok) break;
+    }
+
+    if (!upstream?.ok) {
+      return res.status(lastStatus).json({ message: "Unable to fetch document" });
+    }
+
+    const contentType = upstream.headers.get("content-type") || "application/octet-stream";
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${downloadName.replace(/"/g, "")}"`
+    );
+    res.send(buffer);
+  } catch (error) {
+    console.error("downloadContentFile error:", error);
+    res.status(500).json({ message: "Document download failed" });
+  }
 }
 
 export async function createContent(req, res) {

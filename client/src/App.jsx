@@ -93,6 +93,7 @@ export default function App() {
           <Route path="residential" element={<StandardPage pageKey="residential" />} />
           <Route path="knowledge-partners" element={<StandardPage pageKey="knowledgePartners" />} />
           <Route path="founders" element={<StandardPage pageKey="founders" />} />
+          <Route path="director-message" element={<StandardPage pageKey="chairman" />} />
           <Route path="chairman-message" element={<StandardPage pageKey="chairman" />} />
           <Route path="chairmans-message" element={<StandardPage pageKey="chairman" />} />
           <Route path="principal-desk" element={<StandardPage pageKey="principal" />} />
@@ -113,7 +114,6 @@ export default function App() {
           <Route path="sports-facilities" element={<StandardPage pageKey="sportsFacilities" />} />
           <Route path="library" element={<StandardPage pageKey="library" />} />
           <Route path="transport" element={<StandardPage pageKey="transport" />} />
-          <Route path="hostel" element={<StandardPage pageKey="hostel" />} />
           <Route path="cafeteria" element={<StandardPage pageKey="cafeteria" />} />
           <Route path="photo-gallery" element={<StandardPage pageKey="photoGallery" />} />
           <Route path="video-gallery" element={<StandardPage pageKey="videoGallery" />} />

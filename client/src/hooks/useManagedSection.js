@@ -29,7 +29,8 @@ export default function useManagedSection(sectionKey, fallbackData) {
       } catch (err) {
         console.error(err);
         if (isMounted) {
-          setSection({ ...(fallbackData || {}), __loading: false });
+          // Keep shimmer state instead of flashing fallback content when the backend is unavailable.
+          setSection({ ...(fallbackData || {}), __loading: true, __error: true });
         }
       }
     }

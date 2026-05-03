@@ -81,20 +81,78 @@ function getYoutubeEmbedUrl(url = "") {
   return url;
 }
 
-function resolveDisclosureFileUrl(item = {}) {
-  const raw = String(item.fileUrl || "").trim();
-  if (raw && raw !== "#") return raw;
+function normalizeCloudinaryDocumentUrl(url = "") {
+  return String(url || "")
+    .trim()
+    .replace(/\/upload\/(?:[^/]+,)*fl_attachment,?/i, "/upload/")
+    .replace(/\/upload\/fl_attachment\//i, "/upload/")
+    .replace(/([^:]\/)\/+/g, "$1");
+}
 
+function resolveDisclosureFileUrl(item = {}) {
   const name = String(item.name || "").toLowerCase();
   const fallbackMap = [
     { match: ["recognition"], href: "/documents/recognition-certificate.pdf" },
+    { match: ["noc", "deo"], href: "/documents/deo-certificate.pdf" },
     { match: ["trust registration", "trust certificate"], href: "/documents/trust-certificate.pdf" },
     { match: ["affiliation"], href: "/documents/affiliation-letter.pdf" },
     { match: ["staff details", "teacher list"], href: "/documents/teacher-list.xlsx" },
   ];
 
   const fallback = fallbackMap.find((entry) => entry.match.some((keyword) => name.includes(keyword)));
-  return fallback?.href || "";
+  if (fallback?.href) return fallback.href;
+
+  const raw = normalizeCloudinaryDocumentUrl(item.fileUrl || "");
+  if (raw && raw !== "#") return raw;
+
+  return "";
+}
+
+function buildDisclosureDownloadHref(item = {}) {
+  const fileUrl = normalizeCloudinaryDocumentUrl(resolveDisclosureFileUrl(item));
+  if (!fileUrl) return "";
+  if (fileUrl.startsWith("/")) return fileUrl;
+
+  const apiOrigin = String(api.defaults.baseURL || "").replace(/\/api\/?$/i, "");
+  if (!apiOrigin) return fileUrl;
+
+  const extensionMatch = fileUrl.match(/\.([a-z0-9]+)(?:\?|$)/i);
+  const safeBaseName = String(item.name || "document")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "document";
+  const fileName = `${safeBaseName}.${extensionMatch?.[1] || "pdf"}`;
+
+  return `${apiOrigin}/api/content/download?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;
+}
+
+function replaceChairmanWithDirector(value) {
+  return String(value || "")
+    .replace(/Chairman's/gi, "Director's")
+    .replace(/\bChairman\b/gi, "Director");
+}
+
+function normalizeDirectorPageCopy(pageKey, page) {
+  if (pageKey !== "chairman" || !page) return page;
+
+  return {
+    ...page,
+    eyebrow: replaceChairmanWithDirector(page.eyebrow),
+    title: replaceChairmanWithDirector(page.title),
+    body: replaceChairmanWithDirector(page.body),
+    meta: {
+      ...(page.meta || {}),
+      sections: Array.isArray(page.meta?.sections)
+        ? page.meta.sections.map((section) => ({
+            ...section,
+            title: replaceChairmanWithDirector(section.title),
+            eyebrow: replaceChairmanWithDirector(section.eyebrow),
+            signatureRole: replaceChairmanWithDirector(section.signatureRole),
+          }))
+        : page.meta?.sections,
+    },
+  };
 }
 
 function isLegacyGeneratedSection(section) {
@@ -272,7 +330,7 @@ export default function StandardPage({ pageKey }) {
         if (!isMounted) return;
 
         if (dbPage) {
-          setPage({
+          setPage(normalizeDirectorPageCopy(pageKey, {
             eyebrow: dbPage.eyebrow || fallbackPage.eyebrow,
             title: dbPage.title || fallbackPage.title,
             image: dbPage.imageUrl || fallbackPage.image,
@@ -290,9 +348,9 @@ export default function StandardPage({ pageKey }) {
                 fallbackPage.meta?.sections
               ),
             },
-          });
+          }));
         } else {
-          setPage(fallbackPage);
+          setPage(normalizeDirectorPageCopy(pageKey, fallbackPage));
         }
 
         if (pageKey === "events") {
@@ -369,14 +427,14 @@ export default function StandardPage({ pageKey }) {
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
                     to="/admission-enquiry"
-                    className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-4 font-bold text-white shadow-xl"
+                    className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-4 font-bold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(14,116,144,0.32)]"
                   >
                     <User size={18} />
                     Admission Enquiry
                   </Link>
                   <Link
                     to="/contact-us"
-                    className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-7 py-4 font-bold text-white"
+                    className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-7 py-4 font-bold text-white transition duration-300 hover:-translate-y-1 hover:bg-white/15 hover:shadow-[0_20px_40px_rgba(15,23,42,0.2)]"
                   >
                     <Phone size={18} />
                     Contact School
@@ -481,12 +539,12 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               return (
                 <article
                   key={item._id || item.slug || item.title}
-                  className="overflow-hidden rounded-[30px] bg-white shadow-2xl"
+                  className="group overflow-hidden rounded-[30px] bg-white shadow-2xl transition duration-300 hover:-translate-y-2 hover:shadow-[0_28px_60px_rgba(15,23,42,0.18)]"
                 >
                   <div className="relative h-64">
                     <img
                       alt={item.title}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       src={
                         item.imageUrl ||
                         "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1400&auto=format&fit=crop"
@@ -536,8 +594,8 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
           </div>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {galleryItems.map((url, index) => (
-              <div key={`${url}-${index}`} className="overflow-hidden rounded-[26px] shadow-xl">
-                <img alt="gallery" className="h-72 w-full object-cover" src={url} />
+              <div key={`${url}-${index}`} className="group overflow-hidden rounded-[26px] shadow-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.16)]">
+                <img alt="gallery" className="h-72 w-full object-cover transition duration-500 group-hover:scale-105" src={url} />
               </div>
             ))}
           </div>
@@ -566,7 +624,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                 return (
                   <article
                     key={item._id || item.slug || item.title || `${mediaUrl}-${index}`}
-                    className="overflow-hidden rounded-[26px] bg-white shadow-xl"
+                    className="group overflow-hidden rounded-[26px] bg-white shadow-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.16)]"
                   >
                     <div className="overflow-hidden bg-slate-950">
                       {isVideoGallery ? (
@@ -583,20 +641,20 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                             src={item.videoUrl}
                             poster={item.imageUrl || undefined}
                             controls
-                            className="h-72 w-full object-cover"
+                            className="h-72 w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                           />
                         ) : item.imageUrl ? (
                           <img
                             src={item.imageUrl}
                             alt={item.title || `Video ${index + 1}`}
-                            className="h-72 w-full object-cover"
+                            className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
                           />
                         ) : null
                       ) : mediaUrl ? (
                         <img
                           src={mediaUrl}
                           alt={item.title || `Gallery ${index + 1}`}
-                          className="h-72 w-full object-cover"
+                          className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
                         />
                       ) : null}
                     </div>
@@ -632,7 +690,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
       return (
         <section className="py-24 bg-white text-slate-900">
           <div className="containerx">
-            <div className="grid items-center gap-10 rounded-[34px] bg-cyan-50 p-10 md:p-16 lg:grid-cols-2">
+            <div className="grid items-center gap-10 rounded-[34px] bg-cyan-50 p-10 transition duration-300 hover:shadow-[0_28px_60px_rgba(8,47,73,0.12)] md:p-16 lg:grid-cols-2">
               <div>
                 <h2 className="text-5xl font-black text-slate-900">{section.title}</h2>
                 <div className="space-y-5">
@@ -645,14 +703,14 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                 {section.ctaLabel ? (
                   <a
                     href={section.ctaHref || "/contact-us"}
-                    className="mt-8 inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold text-white"
+                    className="mt-8 inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold text-white transition duration-300 hover:-translate-y-1 hover:bg-slate-800 hover:shadow-[0_20px_40px_rgba(15,23,42,0.24)]"
                   >
                     {section.ctaLabel}
                     <ArrowRight size={18} />
                   </a>
                 ) : null}
               </div>
-              <div className="rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-700 p-12 text-white shadow-2xl">
+              <div className="rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-700 p-12 text-white shadow-2xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(8,47,73,0.2)]">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15">
                   <SideIcon size={28} />
                 </div>
@@ -670,10 +728,10 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
     return (
       <section className={`py-24 ${section.theme === "dark" ? "bg-slate-950 text-white" : "bg-white text-slate-900"}`}>
         <div className="containerx grid items-center gap-14 lg:grid-cols-2">
-          <div className="relative">
+          <div className="group relative">
             <img
               src={section.mediaUrl}
-              className="h-[520px] w-full rounded-[30px] object-cover shadow-2xl"
+              className="h-[520px] w-full rounded-[30px] object-cover shadow-2xl transition duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_30px_70px_rgba(15,23,42,0.22)]"
               alt={section.title}
             />
             {section.quoteBadge ? (
@@ -684,7 +742,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
             {section.secondaryMediaUrl && !section.quoteBadge ? (
               <img
                 src={section.secondaryMediaUrl}
-                className="absolute -bottom-10 -right-10 h-52 w-64 rounded-3xl border-8 border-white object-cover shadow-2xl"
+                className="absolute -bottom-10 -right-10 h-52 w-64 rounded-3xl border-8 border-white object-cover shadow-2xl transition duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
                 alt=""
               />
             ) : null}
@@ -721,7 +779,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
             {section.ctaLabel ? (
               <a
                 href={section.ctaHref || "/contact-us"}
-                className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white shadow-xl"
+                className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(14,116,144,0.32)]"
               >
                 {section.ctaLabel}
                 <ArrowRight size={18} />
@@ -754,7 +812,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
             {(section.items || []).map((item, index) => (
               <article
                 key={`${item.title}-${index}`}
-                className="rounded-[30px] border border-slate-100 bg-white p-8 text-center shadow-2xl"
+                className="rounded-[30px] border border-slate-100 bg-white p-8 text-center shadow-2xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.14)]"
               >
                 <div className="text-5xl font-black text-cyan-600">{item.title}</div>
                 {item.subtitle ? (
@@ -780,7 +838,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                 return (
                   <article
                     key={`${item.title}-${index}`}
-                    className="rounded-[30px] border border-slate-100 bg-white p-8 shadow-2xl"
+                    className="rounded-[30px] border border-slate-100 bg-white p-8 shadow-2xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.14)]"
                   >
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-700 text-white">
                       <Icon size={28} />
@@ -806,7 +864,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                 {(section.items || []).map((item, index) => (
                   <article
                     key={`${item.title}-${index}`}
-                    className="rounded-2xl bg-white p-6 shadow-lg"
+                    className="rounded-2xl bg-white p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.12)]"
                   >
                     <h3 className="text-2xl font-black text-slate-900">{item.title}</h3>
                     {item.subtitle ? (
@@ -831,7 +889,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                 {(section.items || []).map((item, index) => (
                   <article
                     key={`${item.title}-${index}`}
-                    className="rounded-2xl bg-white p-6 text-center shadow-lg"
+                    className="rounded-2xl bg-white p-6 text-center shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.12)]"
                   >
                     <p className="text-lg font-bold text-slate-800">{item.title}</p>
                   </article>
@@ -852,7 +910,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               return (
                 <article
                   key={`${item.title}-${index}`}
-                  className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-xl"
+                  className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.14)]"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-700 text-white">
                     <Icon size={24} />
@@ -877,12 +935,12 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {(section.items || []).map((item, index) => (
                 <article
                   key={`${item.title}-${index}`}
-                  className="overflow-hidden rounded-[30px] border border-white/10 bg-white/5"
+                  className="group overflow-hidden rounded-[30px] border border-white/10 bg-white/5 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(8,47,73,0.28)]"
                 >
                   {item.image ? (
                     <img
                       alt={item.title}
-                      className="h-72 w-full object-cover"
+                      className="h-72 w-full object-cover transition duration-500 group-hover:scale-105"
                       src={item.image}
                     />
                   ) : null}
@@ -916,13 +974,13 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {(section.items || []).map((item, index) => (
                 <article
                   key={`${item.title}-${index}`}
-                  className="overflow-hidden rounded-[30px] bg-white shadow-2xl"
+                  className="group overflow-hidden rounded-[30px] bg-white shadow-2xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.16)]"
                 >
                   {item.image ? (
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="h-[320px] w-full object-cover"
+                      className="h-[320px] w-full object-cover transition duration-500 group-hover:scale-105"
                     />
                   ) : null}
                   <div className="p-6">
@@ -955,7 +1013,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {(section.items || []).map((item, index) => (
                 <article
                   key={`${item.title}-${index}`}
-                  className="rounded-[26px] border border-white/10 bg-white/5 p-7"
+                  className="rounded-[26px] border border-white/10 bg-white/5 p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(8,47,73,0.22)]"
                 >
                   {item.subtitle ? (
                     <div className="text-sm font-bold uppercase tracking-[3px] text-cyan-300">
@@ -985,7 +1043,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {(section.items || []).map((item, index) => (
                 <article
                   key={`${item.title}-${index}`}
-                  className="rounded-[30px] border border-white/10 bg-white/5 p-10 backdrop-blur-xl"
+                  className="rounded-[30px] border border-white/10 bg-white/5 p-10 backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(8,47,73,0.24)]"
                 >
                   {item.icon ? (
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
@@ -1021,8 +1079,8 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               key={`${item.title}-${index}`}
               className={`rounded-[30px] p-10 ${
                 dark
-                  ? "border border-white/10 bg-white/5 backdrop-blur-xl"
-                  : "overflow-hidden border border-slate-200 bg-slate-50 shadow-lg"
+                  ? "border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(8,47,73,0.24)]"
+                  : "group overflow-hidden border border-slate-200 bg-slate-50 shadow-lg transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.12)]"
               }`}
             >
               {item.image ? (
@@ -1032,7 +1090,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                   className={`w-full object-cover ${
                     dark
                       ? "mb-6 h-52 rounded-[22px]"
-                      : "h-52"
+                      : "h-52 transition duration-500 group-hover:scale-105"
                   }`}
                 />
               ) : null}
@@ -1072,7 +1130,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
             return (
               <article
                 key={`${item.label}-${index}`}
-                className="rounded-[28px] bg-white p-8 text-center shadow-xl"
+                className="rounded-[28px] bg-white p-8 text-center shadow-xl transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(15,23,42,0.14)]"
               >
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
                   <Icon size={28} />
@@ -1095,13 +1153,13 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
           {(section.items || []).map((item, index) => (
             <article
               key={`${item.url}-${index}`}
-              className="overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/40"
+              className="group overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/40 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_rgba(8,47,73,0.24)]"
             >
               {item.url ? (
                 isVideoUrl(item.url) ? (
-                  <video src={item.url} controls className="h-60 w-full object-cover" />
+                  <video src={item.url} controls className="h-60 w-full object-cover transition duration-500 group-hover:scale-[1.02]" />
                 ) : (
-                  <img src={item.url} alt={item.caption || `Gallery ${index + 1}`} className="h-60 w-full object-cover" />
+                  <img src={item.url} alt={item.caption || `Gallery ${index + 1}`} className="h-60 w-full object-cover transition duration-500 group-hover:scale-105" />
                 )
               ) : null}
               {item.caption ? (
@@ -1176,10 +1234,10 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
                     <td className="p-4">
                       {resolveDisclosureFileUrl(item) ? (
                         <a
-                          href={resolveDisclosureFileUrl(item)}
+                          href={buildDisclosureDownloadHref(item)}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-2 font-semibold text-blue-700"
+                          className="inline-flex items-center gap-2 font-semibold text-blue-700 transition duration-300 hover:-translate-y-0.5 hover:text-blue-900"
                         >
                           <Download size={16} />
                           View / Download
@@ -1390,7 +1448,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {section.ctaLabel ? (
                 <a
                   href={section.ctaHref || "/contact-us"}
-                  className="mt-8 inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold text-white"
+                  className="mt-8 inline-flex items-center gap-3 rounded-full bg-slate-900 px-8 py-4 font-bold text-white transition duration-300 hover:-translate-y-1 hover:bg-slate-800 hover:shadow-[0_20px_40px_rgba(15,23,42,0.24)]"
                 >
                   {section.ctaLabel}
                   <ArrowRight size={18} />
@@ -1418,7 +1476,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
               {section.ctaLabel ? (
                 <a
                   href={section.ctaHref || "/contact-us"}
-                  className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-slate-900"
+                  className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-slate-900 transition duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)]"
                 >
                   {section.ctaLabel}
                   <ArrowRight size={18} />
@@ -1452,7 +1510,7 @@ function PageSectionRenderer({ section, eventItems = [], galleryItems = [] }) {
         {section.ctaLabel ? (
           <a
             href={section.ctaHref || "/contact-us"}
-            className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-slate-900 shadow-xl"
+            className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-bold text-slate-900 shadow-xl transition duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)]"
           >
             {section.ctaLabel}
             <ArrowRight size={18} />

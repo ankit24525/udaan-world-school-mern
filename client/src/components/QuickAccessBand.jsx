@@ -81,8 +81,8 @@ export default function QuickAccessBand() {
                     to={item.href}
                     className={
                       item.variant === "solid"
-                        ? "inline-flex items-center gap-3 rounded-full bg-white px-6 py-4 font-bold text-blue-700 shadow-2xl md:px-7"
-                        : "inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-6 py-4 font-bold text-white backdrop-blur-md md:px-7"
+                        ? "inline-flex items-center gap-3 rounded-full bg-white px-6 py-4 font-bold text-blue-700 shadow-2xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)] md:px-7"
+                        : "inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-6 py-4 font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/20 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)] md:px-7"
                     }
                   >
                     <Icon size={18} />

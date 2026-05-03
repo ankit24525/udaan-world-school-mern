@@ -165,8 +165,8 @@ export const pageContent = {
     },
   },
   chairman: {
-    eyebrow: "Chairman's Desk",
-    title: "Message From The\nChairman",
+    eyebrow: "Director's Desk",
+    title: "Message From The\nDirector",
     image:
       "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1800&auto=format&fit=crop",
     body: [
@@ -180,15 +180,15 @@ export const pageContent = {
           id: "chairman-message",
           type: "split",
           title: "Education With Vision & Responsibility",
-          eyebrow: "Chairman's Message",
+          eyebrow: "Director's Message",
           body:
             "At Udaan World School, we believe education is the foundation of a progressive society. Our aim is to create learners who are knowledgeable, compassionate and courageous.\n\nWe continuously invest in modern learning environments, experienced educators and holistic development programs so every child receives the best opportunities.\n\nI warmly invite families to become a part of this journey toward excellence and values.",
           mediaUrl:
             "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop",
           secondaryMediaUrl:
             "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop",
-          signatureName: "Chairman Name",
-          signatureRole: "Chairman, Udaan World School",
+          signatureName: "Director Name",
+          signatureRole: "Director, Udaan World School",
           quoteBadge: true,
           theme: "light",
         },

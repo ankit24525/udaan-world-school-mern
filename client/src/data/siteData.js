@@ -55,7 +55,7 @@ export const navItems = [
     items: [
       { label: "About School", href: links.about },
       { label: "Founders", href: "/founders" },
-      { label: "Chairman Message", href: "/chairman-message" },
+      { label: "Director Message", href: "/director-message" },
       { label: "Principal Desk", href: "/principal-desk" },
       { label: "Senior Leader Team", href: "/senior-leader-team" },
       { label: "Mandatory Public Disclosure", href: links.disclosure },
@@ -85,7 +85,6 @@ export const navItems = [
       { label: "Sports Facilities", href: "/sports-facilities" },
       { label: "Library", href: "/library" },
       { label: "Transport", href: "/transport" },
-      { label: "Hostel", href: "/hostel" },
       { label: "Cafeteria", href: "/cafeteria" },
     ],
   },

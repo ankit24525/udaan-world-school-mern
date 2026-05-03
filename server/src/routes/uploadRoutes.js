@@ -1,10 +1,39 @@
 import { Router } from "express";
 import fs from "fs/promises";
+import path from "path";
 import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
 
 const router = Router();
 const upload = multer({ dest: "uploads/" });
+
+const documentExtensions = new Set([
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".csv",
+  ".txt",
+]);
+
+function isDocumentFile(file) {
+  const extension = path.extname(file?.originalname || "").toLowerCase();
+  const mimeType = String(file?.mimetype || "").toLowerCase();
+
+  return (
+    documentExtensions.has(extension) ||
+    mimeType.includes("pdf") ||
+    mimeType.includes("msword") ||
+    mimeType.includes("officedocument") ||
+    mimeType.includes("excel") ||
+    mimeType.includes("spreadsheet") ||
+    mimeType.includes("powerpoint") ||
+    mimeType.includes("text/")
+  );
+}
 
 router.post("/", upload.single("file"), async (req, res) => {
   try {
@@ -21,8 +50,12 @@ router.post("/", upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
+    const isDocument = isDocumentFile(req.file);
     const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "auto",
+      resource_type: isDocument ? "raw" : "auto",
+      folder: isDocument ? "udaan/documents" : "udaan/media",
+      use_filename: true,
+      unique_filename: true,
     });
 
     await fs.unlink(req.file.path).catch(() => {});
@@ -30,6 +63,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     res.json({
       url: result.secure_url,
       resourceType: result.resource_type,
+      publicId: result.public_id,
     });
   } catch (error) {
     console.error("Upload failed:", error);

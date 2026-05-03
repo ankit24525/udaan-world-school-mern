@@ -415,7 +415,7 @@ export default function GalleryManagement() {
                   <p className="font-medium text-slate-800">How this works</p>
                   <ul className="mt-3 space-y-2">
                     <li>Media added here appears on the public gallery pages.</li>
-                    <li>Page titles and section text are edited from Website Pages.</li>
+                    <li>Page titles and section text are edited from Pages.</li>
                     <li>Use Events Gallery for celebration and annual function images.</li>
                   </ul>
                 </div>

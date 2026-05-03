@@ -92,21 +92,21 @@ export default function Creativity() {
           >
             <Link
               to="/admission-enquiry"
-              className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 font-bold text-blue-700 shadow-2xl"
+              className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 font-bold text-blue-700 shadow-2xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)]"
             >
               <GraduationCap size={18} />
               New Admission
             </Link>
             <Link
               to="/about-us"
-              className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-7 py-4 font-bold text-white backdrop-blur-md"
+              className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-7 py-4 font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/20 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)]"
             >
               About School
               <ArrowRight size={18} />
             </Link>
             <Link
               to="/mandatory-public-disclosure"
-              className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-7 py-4 font-bold text-white backdrop-blur-md"
+              className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/15 px-7 py-4 font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/20 hover:shadow-[0_20px_40px_rgba(15,23,42,0.18)]"
             >
               <FileText size={18} />
               Disclosure

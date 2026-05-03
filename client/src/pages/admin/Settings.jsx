@@ -24,7 +24,7 @@ const defaultSettings = {
     social: {
       facebook: "",
       instagram: "",
-      linkedin: "",
+      youtube: "",
     },
     notifications: {
       emailNotifications: true,
@@ -178,8 +178,8 @@ export default function Settings() {
           <Card title="Social Media Links" icon={Globe}>
             <Input value={settings.meta.social.facebook} onChange={(v) => updateGroup("social", "facebook", v)} placeholder="Facebook URL" />
             <Input value={settings.meta.social.instagram} onChange={(v) => updateGroup("social", "instagram", v)} placeholder="Instagram URL" />
-            <Input value={settings.meta.social.linkedin} onChange={(v) => updateGroup("social", "linkedin", v)} placeholder="LinkedIn URL" />
-            <p className="text-sm text-gray-500">These links are now used directly in the website footer.</p>
+            <Input value={settings.meta.social.youtube} onChange={(v) => updateGroup("social", "youtube", v)} placeholder="YouTube URL" />
+            <p className="text-sm text-gray-500">These links are used in the website navbar, footer and social strip.</p>
           </Card>
         </div>
 
