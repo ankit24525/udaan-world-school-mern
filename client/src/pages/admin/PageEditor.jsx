@@ -82,7 +82,7 @@ function createSection(type = "text") {
       type,
       title: "Documents",
       label: "B : DOCUMENTS AND INFORMATION",
-      items: [{ name: "", fileUrl: "" }],
+      items: [{ name: "", fileUrl: "", fileName: "", publicId: "", resourceType: "" }],
     };
   }
 
@@ -231,8 +231,11 @@ function normalizeSections(sections = []) {
         ? section.items.map((item) => ({
             name: item.name || "",
             fileUrl: item.fileUrl || "",
+            fileName: item.fileName || "",
+            publicId: item.publicId || "",
+            resourceType: item.resourceType || "",
           }))
-        : [{ name: "", fileUrl: "" }];
+        : [{ name: "", fileUrl: "", fileName: "", publicId: "", resourceType: "" }];
     }
 
     if (normalized.type === "simpleTable") {
@@ -785,7 +788,7 @@ export default function PageEditor() {
       const formData = new FormData();
       formData.append("file", file);
       const res = await api.post("/upload", formData);
-      onUploaded(res.data.url, res.data.resourceType);
+      onUploaded(res.data.url, res.data.resourceType, res.data.publicId, file.name);
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Upload failed");
@@ -2170,6 +2173,22 @@ function DocumentsTableEditor({
   onUpdateSection,
   onUpload,
 }) {
+  const [successMap, setSuccessMap] = useState({});
+
+  function getFileNameLabel(item = {}) {
+    if (item.fileName) return item.fileName;
+
+    const url = String(item.fileUrl || "").trim();
+    if (!url || url === "#") return "";
+
+    try {
+      const cleanPath = url.split("?")[0].split("#")[0];
+      return decodeURIComponent(cleanPath.split("/").pop() || "");
+    } catch {
+      return url.split("/").pop() || "";
+    }
+  }
+
   return (
     <div className="space-y-4 rounded-xl border bg-white p-4">
       <input
@@ -2209,22 +2228,44 @@ function DocumentsTableEditor({
                 className="w-full rounded-lg border px-4 py-3"
               />
               <div className="flex items-center justify-between gap-3">
-                <input
-                  value={item.fileUrl || ""}
-                  onChange={(e) => onUpdateItem(section.id, index, "fileUrl", e.target.value)}
-                  placeholder="File URL"
-                  className="w-full rounded-lg border px-4 py-3"
-                />
+                <div className="w-full rounded-lg border bg-gray-50 px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Uploaded file
+                  </p>
+                  <p className="mt-1 truncate text-sm font-medium text-gray-800">
+                    {getFileNameLabel(item) || "No file uploaded yet"}
+                  </p>
+                </div>
                 <UploadButton
                   label="File"
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                   onFile={async (file) => {
-                    await onUpload(file, (url) =>
-                      onUpdateItem(section.id, index, "fileUrl", url)
-                    );
+                    await onUpload(file, (url, resourceType, publicId, fileName) => {
+                      onUpdateItem(section.id, index, "fileUrl", url);
+                      onUpdateItem(section.id, index, "fileName", fileName || file.name);
+                      onUpdateItem(section.id, index, "publicId", publicId || "");
+                      onUpdateItem(section.id, index, "resourceType", resourceType || "");
+                      setSuccessMap((prev) => ({
+                        ...prev,
+                        [`${section.id}-${index}`]: `${fileName || file.name} uploaded successfully`,
+                      }));
+                    });
                   }}
                 />
               </div>
+              <input
+                type="hidden"
+                value={item.fileUrl || ""}
+                onChange={(e) => onUpdateItem(section.id, index, "fileUrl", e.target.value)}
+              />
+              {successMap[`${section.id}-${index}`] ? (
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-xs text-white">
+                    ✓
+                  </span>
+                  {successMap[`${section.id}-${index}`]}
+                </div>
+              ) : null}
             </div>
           </div>
         ))}

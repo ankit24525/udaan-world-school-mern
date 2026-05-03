@@ -1,3 +1,4 @@
+import cloudinary from "../config/cloudinary.js";
 import Content from "../models/Content.js";
 
 function normalizeCloudinaryDocumentUrl(url = "") {
@@ -49,13 +50,29 @@ export async function getContent(req, res) {
 export async function downloadContentFile(req, res) {
   try {
     const rawUrl = String(req.query.url || "").trim();
+    const publicId = String(req.query.publicId || "").trim();
+    const resourceType = String(req.query.resourceType || "raw").trim() || "raw";
     const downloadName = String(req.query.name || "document").trim() || "document";
 
-    if (!rawUrl || !/^https?:\/\//i.test(rawUrl)) {
-      return res.status(400).json({ message: "A valid file URL is required" });
+    let sourceUrl = rawUrl;
+
+    if (publicId) {
+      try {
+        const asset = await cloudinary.api.resource(publicId, {
+          resource_type: resourceType,
+          type: "upload",
+        });
+        sourceUrl = asset?.secure_url || sourceUrl;
+      } catch (error) {
+        console.error("cloudinary resource lookup failed:", error?.message || error);
+      }
     }
 
-    const candidates = buildCloudinaryDocumentCandidates(rawUrl);
+    if (!sourceUrl || !/^https?:\/\//i.test(sourceUrl)) {
+      return res.status(400).json({ message: "A valid file source is required" });
+    }
+
+    const candidates = buildCloudinaryDocumentCandidates(sourceUrl);
     let upstream = null;
     let lastStatus = 502;
 

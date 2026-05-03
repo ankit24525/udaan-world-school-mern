@@ -90,6 +90,9 @@ function normalizeCloudinaryDocumentUrl(url = "") {
 }
 
 function resolveDisclosureFileUrl(item = {}) {
+  const raw = normalizeCloudinaryDocumentUrl(item.fileUrl || "");
+  if (raw && raw !== "#") return raw;
+
   const name = String(item.name || "").toLowerCase();
   const fallbackMap = [
     { match: ["recognition"], href: "/documents/recognition-certificate.pdf" },
@@ -101,9 +104,6 @@ function resolveDisclosureFileUrl(item = {}) {
 
   const fallback = fallbackMap.find((entry) => entry.match.some((keyword) => name.includes(keyword)));
   if (fallback?.href) return fallback.href;
-
-  const raw = normalizeCloudinaryDocumentUrl(item.fileUrl || "");
-  if (raw && raw !== "#") return raw;
 
   return "";
 }
@@ -117,12 +117,17 @@ function buildDisclosureDownloadHref(item = {}) {
   if (!apiOrigin) return fileUrl;
 
   const extensionMatch = fileUrl.match(/\.([a-z0-9]+)(?:\?|$)/i);
-  const safeBaseName = String(item.name || "document")
+  const safeBaseName = String(item.fileName || item.name || "document")
     .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "") || "document";
-  const fileName = `${safeBaseName}.${extensionMatch?.[1] || "pdf"}`;
+  const fileName = safeBaseName.includes(".")
+    ? safeBaseName
+    : `${safeBaseName}.${extensionMatch?.[1] || "pdf"}`;
+
+  if (item.publicId) {
+    return `${apiOrigin}/api/content/download?publicId=${encodeURIComponent(item.publicId)}&resourceType=${encodeURIComponent(item.resourceType || "raw")}&url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;
+  }
 
   return `${apiOrigin}/api/content/download?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;
 }

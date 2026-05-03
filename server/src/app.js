@@ -65,6 +65,10 @@ app.get("/", (req, res) => {
   res.json({ ok: true, message: "Udaan World School API" });
 });
 
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end();
+});
+
 
 // ❗ 404 handler
 app.use((req, res) => {
