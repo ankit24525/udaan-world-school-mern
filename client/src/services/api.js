@@ -1,7 +1,21 @@
 import axios from "axios";
 
+function normalizeApiBaseUrl(value) {
+  const raw = String(value || "").trim().replace(/\/+$/, "");
+
+  if (!raw) {
+    return import.meta.env.DEV ? "http://localhost:5000/api" : "/api";
+  }
+
+  if (/\/api$/i.test(raw)) {
+    return raw;
+  }
+
+  return `${raw}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // ✅ no fallback needed in production
+  baseURL: normalizeApiBaseUrl(import.meta.env.VITE_API_URL),
   withCredentials: true,
 });
 
