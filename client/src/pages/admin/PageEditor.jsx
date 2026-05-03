@@ -2203,6 +2203,17 @@ function DocumentsTableEditor({
 }) {
   const [successMap, setSuccessMap] = useState({});
 
+  function applyItemPatch(sectionId, itemIndex, patch) {
+    if (typeof onUpdateItemFields === "function") {
+      onUpdateItemFields(sectionId, itemIndex, patch);
+      return;
+    }
+
+    Object.entries(patch || {}).forEach(([field, value]) => {
+      onUpdateItem(sectionId, itemIndex, field, value);
+    });
+  }
+
   function getFileNameLabel(item = {}) {
     if (item.fileName) return item.fileName;
 
@@ -2269,7 +2280,7 @@ function DocumentsTableEditor({
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                   onFile={async (file) => {
                     await onUpload(file, (url, resourceType, publicId, fileName) => {
-                      onUpdateItemFields(section.id, index, {
+                      applyItemPatch(section.id, index, {
                         fileUrl: url,
                         fileName: fileName || file.name,
                         publicId: publicId || "",
