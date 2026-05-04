@@ -63,6 +63,9 @@ const pagePreviewImages = {
   homeChairman: "/images/people/director.jpeg",
   homeWhyChooseUs: "/images/people/principal.jpeg",
   homeStories: "/images/people/founder.jpeg",
+  homeQuickAccessBand:
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1400&auto=format&fit=crop",
+  footerSocialBand: "/images/people/director.jpeg",
 };
 
 const MAX_EVENT_GALLERY_IMAGES = 6;

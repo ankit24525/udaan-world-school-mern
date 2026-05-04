@@ -11,6 +11,8 @@ export const managedPageSections = [
   { key: "homeFacilities", title: "Home Campus Highlights", group: "Homepage" },
   { key: "homePartners", title: "Home Knowledge Partners", group: "Homepage" },
   { key: "homeTestimonials", title: "Home Testimonials", group: "Homepage" },
+  { key: "homeQuickAccessBand", title: "Home Quick Access Band", group: "Homepage" },
+  { key: "footerSocialBand", title: "Footer Social Banner", group: "Footer" },
   ...Object.entries(pageContent).map(([key, page]) => ({
     key,
     title: page.title,

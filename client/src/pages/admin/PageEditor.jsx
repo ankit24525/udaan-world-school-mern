@@ -658,6 +658,18 @@ function buildFallbackPage(key) {
       title: "Parents Testimonials",
       meta: { stars: 4, items: [{ name: "Amit Gupta", text: "Great school." }] },
     },
+    homeQuickAccessBand: {
+      title: "Udaan\nWorld School",
+      body: "A Place For Growth",
+      imageUrl:
+        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1400&auto=format&fit=crop",
+      meta: {},
+    },
+    footerSocialBand: {
+      title: "Connect with",
+      body: "social media",
+      meta: {},
+    },
   };
 
   if (structuredFallbacks[key]) {

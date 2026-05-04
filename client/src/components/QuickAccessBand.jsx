@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, FileText, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
+import useManagedSection from "../hooks/useManagedSection.js";
 
 const quickActions = [
   {
@@ -23,7 +24,19 @@ const quickActions = [
   },
 ];
 
+const quickAccessFallback = {
+  title: "Udaan\nWorld School",
+  body: "A Place For Growth",
+  imageUrl:
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1400&auto=format&fit=crop",
+};
+
 export default function QuickAccessBand() {
+  const section = useManagedSection("homeQuickAccessBand", quickAccessFallback);
+  const heading = section.title || quickAccessFallback.title;
+  const subheading = section.body || quickAccessFallback.body;
+  const imageUrl = section.imageUrl || quickAccessFallback.imageUrl;
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#0a5cff] via-[#0b63ff] to-[#003fc7] py-20 md:py-24">
       <div className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:60px_60px]" />
@@ -47,8 +60,8 @@ export default function QuickAccessBand() {
           transition={{ duration: 0.75 }}
           className="text-white"
         >
-          <h2 className="text-4xl font-black leading-tight md:text-7xl">
-            Udaan <br /> World School
+          <h2 className="whitespace-pre-line text-4xl font-black leading-tight md:text-7xl">
+            {heading}
           </h2>
 
           <div className="mt-6 overflow-hidden">
@@ -57,7 +70,7 @@ export default function QuickAccessBand() {
               transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
               className="text-xl font-semibold tracking-wide text-cyan-200 md:text-3xl"
             >
-              A Place For Growth
+              {subheading}
             </motion.p>
           </div>
 
@@ -106,7 +119,7 @@ export default function QuickAccessBand() {
             className="overflow-hidden rounded-[28px] border border-white/20 shadow-[0_35px_80px_rgba(0,0,0,0.28)]"
           >
             <img
-              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1400&auto=format&fit=crop"
+              src={imageUrl}
               alt="Udaan World School students"
               className="h-[320px] w-full object-cover md:h-[520px]"
             />

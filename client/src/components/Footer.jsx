@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { BookOpen, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import useManagedSection from "../hooks/useManagedSection.js";
 import api from "../services/api";
 
 const aboutLinks = [
@@ -34,8 +35,14 @@ const defaultSettings = {
   },
 };
 
+const footerSocialFallback = {
+  title: "Connect with",
+  body: "social media",
+};
+
 export default function Footer() {
   const [settings, setSettings] = useState(defaultSettings);
+  const socialBand = useManagedSection("footerSocialBand", footerSocialFallback);
 
   useEffect(() => {
     async function fetchSettings() {
@@ -72,20 +79,36 @@ export default function Footer() {
           <iframe title="Udaan World School Map" src="https://www.google.com/maps?q=Baheri%20Bareilly%20UP%20243201&output=embed" className="h-full w-full grayscale-[0.15]" loading="lazy" />
         </div>
 
-        <div className="absolute -bottom-20 left-1/2 z-20 w-[92%] max-w-7xl -translate-x-1/2 md:-bottom-24">
-          <motion.div whileHover={{ y: -4 }} className="rounded-2xl border-t-4 border-cyan-500 bg-[#f8fafc]/95 px-5 py-8 shadow-[0_35px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl md:px-14 md:py-10">
-            <div className="relative flex flex-col items-center justify-between gap-6 lg:flex-row">
-              <div className="flex w-full items-center gap-6">
-                <h2 className="text-center text-2xl font-light text-black md:text-left md:text-5xl">
-                  Connect with <span className="font-black">social media</span>
-                </h2>
-              </div>
-              <div className="flex flex-wrap justify-center gap-4">
-                {socialLinks.map((item) => (
-                  <a key={item.label} href={item.href} target="_blank" rel="noreferrer" aria-label={item.label} className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500 text-white shadow-xl transition hover:-translate-y-1 hover:bg-cyan-400">
-                    <item.icon size={20} />
-                  </a>
-                ))}
+        <div className="absolute -bottom-20 left-1/2 z-20 w-[96%] max-w-7xl -translate-x-1/2 md:-bottom-24">
+          <motion.div
+            whileHover={{ y: -4 }}
+            className="overflow-hidden rounded-[22px] border-t-[3px] border-cyan-400 bg-[#f8fbff]/95 shadow-[0_35px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+          >
+            <div className="bg-[radial-gradient(circle,rgba(15,23,42,0.09)_1px,transparent_1.5px)] bg-[length:16px_16px] px-6 py-8 md:px-14 md:py-10">
+              <div className="relative flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-center">
+                <div className="flex w-full items-center gap-6">
+                  <h2 className="text-center text-[2rem] font-light tracking-[-0.03em] text-black sm:text-[2.4rem] md:text-left md:text-[3.75rem] md:leading-none">
+                    {socialBand.title || footerSocialFallback.title}{" "}
+                    <span className="font-black">{socialBand.body || footerSocialFallback.body}</span>
+                  </h2>
+                </div>
+                <div className="flex shrink-0 flex-nowrap items-center justify-center gap-4 md:gap-5">
+                  {socialLinks.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={item.label}
+                      className="group flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500 text-white shadow-[0_18px_35px_rgba(6,182,212,0.28)] transition duration-300 hover:-translate-y-1.5 hover:scale-[1.03] hover:bg-cyan-400 hover:shadow-[0_24px_45px_rgba(6,182,212,0.38)]"
+                    >
+                      <item.icon
+                        size={22}
+                        className="transition duration-300 group-hover:scale-110"
+                      />
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
