@@ -2,7 +2,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import QuickAccessBand from "../components/QuickAccessBand";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import DisclosureSideButton from "../components/DisclosureSideButton";
 import "../styles.css"; // ✅ ONLY HERE
@@ -21,8 +20,6 @@ export default function PublicLayout() {
       <main className="site-main">
         <Outlet />
       </main>
-
-      <QuickAccessBand />
 
       <Footer />
 

@@ -1245,7 +1245,7 @@ export default function PageEditor() {
 
           {key === "homeStories" && (
             <StringListEditor
-              title="YouTube Video IDs"
+              title="Video Links or YouTube IDs"
               items={content.meta?.videoIds || []}
               onChange={(items) => updateMeta("videoIds", items)}
             />

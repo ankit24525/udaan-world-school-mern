@@ -7,6 +7,7 @@ import Creativity from "./components/Creativity.jsx";
 import Facilities from "./components/Facilities.jsx";
 import Hero from "./components/Hero.jsx";
 import Partners from "./components/Partners.jsx";
+import QuickAccessBand from "./components/QuickAccessBand.jsx";
 import SportsFeature from "./components/SportsFeature.jsx";
 import StudentStories from "./components/StudentStories.jsx";
 import Testimonials from "./components/Testimonials.jsx";
@@ -44,6 +45,7 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <QuickAccessBand />
       <About />
       <Creativity />
       <SportsFeature />
