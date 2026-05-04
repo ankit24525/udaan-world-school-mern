@@ -89,11 +89,23 @@ function normalizeCloudinaryDocumentUrl(url = "") {
     .replace(/([^:]\/)\/+/g, "$1");
 }
 
-function resolveDisclosureFileUrl(item = {}) {
-  const raw = normalizeCloudinaryDocumentUrl(item.fileUrl || "");
-  if (raw && raw !== "#") return raw;
+function parseCloudinaryAssetMeta(url = "") {
+  const normalized = normalizeCloudinaryDocumentUrl(url);
+  const match = normalized.match(
+    /res\.cloudinary\.com\/[^/]+\/(image|raw|video)\/upload\/(?:[^/]+\/)?v\d+\/(.+?)(?:\.[a-z0-9]+)?(?:\?|$)/i
+  );
 
-  const name = String(item.name || "").toLowerCase();
+  if (!match) return null;
+
+  const [, resourceType, publicId] = match;
+  return {
+    resourceType: resourceType.toLowerCase(),
+    publicId,
+  };
+}
+
+function getDisclosureFallbackHref(name = "") {
+  const normalizedName = String(name || "").toLowerCase();
   const fallbackMap = [
     { match: ["recognition"], href: "/documents/recognition-certificate.pdf" },
     { match: ["noc", "deo"], href: "/documents/deo-certificate.pdf" },
@@ -102,8 +114,30 @@ function resolveDisclosureFileUrl(item = {}) {
     { match: ["staff details", "teacher list"], href: "/documents/teacher-list.xlsx" },
   ];
 
-  const fallback = fallbackMap.find((entry) => entry.match.some((keyword) => name.includes(keyword)));
-  if (fallback?.href) return fallback.href;
+  return (
+    fallbackMap.find((entry) => entry.match.some((keyword) => normalizedName.includes(keyword)))
+      ?.href || ""
+  );
+}
+
+function resolveDisclosureFileUrl(item = {}) {
+  const raw = normalizeCloudinaryDocumentUrl(item.fileUrl || "");
+  const fallbackHref = getDisclosureFallbackHref(item.name);
+
+  const isLegacyCloudinaryPdf =
+    raw &&
+    raw !== "#" &&
+    /\.pdf(?:\?|$)/i.test(raw) &&
+    raw.includes("res.cloudinary.com") &&
+    !item.publicId;
+
+  if (isLegacyCloudinaryPdf && fallbackHref) {
+    return fallbackHref;
+  }
+
+  if (raw && raw !== "#") return raw;
+
+  if (fallbackHref) return fallbackHref;
 
   return "";
 }
@@ -116,6 +150,7 @@ function buildDisclosureDownloadHref(item = {}) {
   const apiOrigin = String(api.defaults.baseURL || "").replace(/\/api\/?$/i, "");
   if (!apiOrigin) return fileUrl;
 
+  const legacyMeta = parseCloudinaryAssetMeta(fileUrl);
   const extensionMatch = fileUrl.match(/\.([a-z0-9]+)(?:\?|$)/i);
   const safeBaseName = String(item.fileName || item.name || "document")
     .trim()
@@ -125,8 +160,11 @@ function buildDisclosureDownloadHref(item = {}) {
     ? safeBaseName
     : `${safeBaseName}.${extensionMatch?.[1] || "pdf"}`;
 
-  if (item.publicId) {
-    return `${apiOrigin}/api/content/download?publicId=${encodeURIComponent(item.publicId)}&resourceType=${encodeURIComponent(item.resourceType || "raw")}&url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;
+  const resolvedPublicId = item.publicId || legacyMeta?.publicId || "";
+  const resolvedResourceType = item.resourceType || legacyMeta?.resourceType || "raw";
+
+  if (resolvedPublicId) {
+    return `${apiOrigin}/api/content/download?publicId=${encodeURIComponent(resolvedPublicId)}&resourceType=${encodeURIComponent(resolvedResourceType)}&url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;
   }
 
   return `${apiOrigin}/api/content/download?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`;

@@ -9,6 +9,38 @@ function buildId(prefix = "section") {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function parseCloudinaryAssetMeta(url = "") {
+  const normalized = String(url || "")
+    .trim()
+    .replace(/\/upload\/(?:[^/]+,)*fl_attachment,?/i, "/upload/")
+    .replace(/\/upload\/fl_attachment\//i, "/upload/")
+    .replace(/([^:]\/)\/+/g, "$1");
+
+  const match = normalized.match(
+    /res\.cloudinary\.com\/[^/]+\/(image|raw|video)\/upload\/(?:[^/]+\/)?v\d+\/(.+?)(?:\.[a-z0-9]+)?(?:\?|$)/i
+  );
+
+  if (!match) return null;
+
+  const [, resourceType, publicId] = match;
+  return {
+    resourceType: resourceType.toLowerCase(),
+    publicId,
+  };
+}
+
+function extractFileName(url = "") {
+  const cleanUrl = String(url || "").trim();
+  if (!cleanUrl) return "";
+
+  try {
+    const cleanPath = cleanUrl.split("?")[0].split("#")[0];
+    return decodeURIComponent(cleanPath.split("/").pop() || "");
+  } catch {
+    return cleanUrl.split("/").pop() || "";
+  }
+}
+
 function createSection(type = "text") {
   const id = buildId(type);
 
@@ -229,11 +261,12 @@ function normalizeSections(sections = []) {
       normalized.label = section.label || "";
       normalized.items = Array.isArray(section.items) && section.items.length
         ? section.items.map((item) => ({
+            ...(parseCloudinaryAssetMeta(item.fileUrl || "") || {}),
             name: item.name || "",
             fileUrl: item.fileUrl || "",
-            fileName: item.fileName || "",
-            publicId: item.publicId || "",
-            resourceType: item.resourceType || "",
+            fileName: item.fileName || extractFileName(item.fileUrl || ""),
+            publicId: item.publicId || parseCloudinaryAssetMeta(item.fileUrl || "")?.publicId || "",
+            resourceType: item.resourceType || parseCloudinaryAssetMeta(item.fileUrl || "")?.resourceType || "",
           }))
         : [{ name: "", fileUrl: "", fileName: "", publicId: "", resourceType: "" }];
     }
@@ -281,6 +314,25 @@ function normalizeSections(sections = []) {
     }
 
     return normalized;
+  });
+}
+
+function enrichDocumentSections(sections = []) {
+  return (sections || []).map((section) => {
+    if (section.type !== "documentsTable") return section;
+
+    return {
+      ...section,
+      items: (section.items || []).map((item) => {
+        const derivedMeta = parseCloudinaryAssetMeta(item.fileUrl || "") || {};
+        return {
+          ...item,
+          fileName: item.fileName || extractFileName(item.fileUrl || ""),
+          publicId: item.publicId || derivedMeta.publicId || "",
+          resourceType: item.resourceType || derivedMeta.resourceType || "",
+        };
+      }),
+    };
   });
 }
 
@@ -912,32 +964,6 @@ export default function PageEditor() {
     updateSections(sections);
   }
 
-  function updateSectionItemFields(sectionId, itemIndex, patch) {
-    const sections = (content.meta?.sections || []).map((section) => {
-      if (section.id !== sectionId) return section;
-      if (section.type === "eventGallery" || section.type === "managedGallery") {
-        const items = Array.from({ length: Math.max(section.items?.length || 0, itemIndex + 1) }, (_, index) => (
-          section.items?.[index] || { url: "", caption: "" }
-        ));
-
-        return {
-          ...section,
-          items: items.map((item, index) =>
-            index === itemIndex ? { ...item, ...patch } : item
-          ),
-        };
-      }
-
-      return {
-        ...section,
-        items: (section.items || []).map((item, index) =>
-          index === itemIndex ? { ...item, ...patch } : item
-        ),
-      };
-    });
-    updateSections(sections);
-  }
-
   function removeSectionItem(sectionId, itemIndex) {
     const sections = (content.meta?.sections || []).map((section) => {
       if (section.id !== sectionId) return section;
@@ -981,8 +1007,8 @@ export default function PageEditor() {
       meta: {
         ...(content.meta || {}),
         sections: isHomePage
-          ? content.meta?.sections
-          : ensureRequiredSections(key, content.meta?.sections || []),
+          ? enrichDocumentSections(content.meta?.sections)
+          : enrichDocumentSections(ensureRequiredSections(key, content.meta?.sections || [])),
       },
       published: content.published,
     };
@@ -1526,7 +1552,6 @@ function SectionBuilder({
                   section={section}
                   onAddItem={onAddItem}
                   onUpdateItem={onUpdateItem}
-                  onUpdateItemFields={updateSectionItemFields}
                   onRemoveItem={onRemoveItem}
                   onUpdateSection={onUpdateSection}
                   onUpload={onUpload}
@@ -2196,7 +2221,6 @@ function DocumentsTableEditor({
   section,
   onAddItem,
   onUpdateItem,
-  onUpdateItemFields,
   onRemoveItem,
   onUpdateSection,
   onUpload,
@@ -2204,11 +2228,6 @@ function DocumentsTableEditor({
   const [successMap, setSuccessMap] = useState({});
 
   function applyItemPatch(sectionId, itemIndex, patch) {
-    if (typeof onUpdateItemFields === "function") {
-      onUpdateItemFields(sectionId, itemIndex, patch);
-      return;
-    }
-
     Object.entries(patch || {}).forEach(([field, value]) => {
       onUpdateItem(sectionId, itemIndex, field, value);
     });
