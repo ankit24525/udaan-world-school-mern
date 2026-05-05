@@ -198,6 +198,29 @@ function normalizeDirectorPageCopy(pageKey, page) {
   };
 }
 
+function normalizeSpecialPageRoutes(pageKey, page) {
+  if (!page?.meta?.sections || !Array.isArray(page.meta.sections)) return page;
+
+  if (pageKey === "results") {
+    return {
+      ...page,
+      meta: {
+        ...(page.meta || {}),
+        sections: page.meta.sections.map((section) =>
+          section.id === "results-cta"
+            ? {
+                ...section,
+                ctaHref: "/contact-us",
+              }
+            : section
+        ),
+      },
+    };
+  }
+
+  return page;
+}
+
 function isLegacyGeneratedSection(section) {
   return (
     (section.type === "text" && section.title === "Overview") ||
@@ -342,6 +365,13 @@ export default function StandardPage({ pageKey }) {
   useEffect(() => {
     let isMounted = true;
 
+    function applyPageTransforms(nextPage) {
+      return normalizeSpecialPageRoutes(
+        pageKey,
+        normalizeDirectorPageCopy(pageKey, nextPage)
+      );
+    }
+
     async function fetchPage() {
       try {
         const requests = {
@@ -373,7 +403,7 @@ export default function StandardPage({ pageKey }) {
         if (!isMounted) return;
 
         if (dbPage) {
-          setPage(normalizeDirectorPageCopy(pageKey, {
+          setPage(applyPageTransforms({
             eyebrow: dbPage.eyebrow || fallbackPage.eyebrow,
             title: dbPage.title || fallbackPage.title,
             image: dbPage.imageUrl || fallbackPage.image,
@@ -393,7 +423,7 @@ export default function StandardPage({ pageKey }) {
             },
           }));
         } else {
-          setPage(normalizeDirectorPageCopy(pageKey, fallbackPage));
+          setPage(applyPageTransforms(fallbackPage));
         }
 
         if (pageKey === "events") {

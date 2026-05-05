@@ -9,24 +9,11 @@ function getCardHref(item = {}) {
   const rawHref = String(item.href || "").trim();
 
   if (title.includes("safe campus")) {
-    if (
-      !rawHref ||
-      rawHref === "/mandatory-public-disclosure" ||
-      rawHref === "/facilities" ||
-      rawHref === "/about-us"
-    ) {
-      return "/safe-campus";
-    }
+    return "/safe-campus";
   }
 
   if (title.includes("holistic")) {
-    if (
-      !rawHref ||
-      rawHref === "/co-curricular-facilities" ||
-      rawHref === "/about-us"
-    ) {
-      return "/holistic-growth";
-    }
+    return "/holistic-growth";
   }
 
   if (rawHref) return rawHref;
