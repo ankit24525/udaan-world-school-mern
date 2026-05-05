@@ -987,14 +987,179 @@ export const pageContent = {
       ],
     },
   },
-  coCurricular: {
+  safeCampus: {
     eyebrow: "Facilities",
-    title: "Co-curricular Facilities",
+    title: "Safe Campus",
+    image:
+      "https://images.unsplash.com/photo-1497486751825-1233686d5d80?q=80&w=1800&auto=format&fit=crop",
     body: [
-      "Co-curricular learning builds confidence, teamwork, creativity, and communication.",
-      "Use this page for art, music, dance, debates, clubs, competitions, and personality development.",
+      "A secure, well-supervised and student-friendly environment where learning happens with confidence and peace of mind.",
     ],
-    highlights: ["Art", "Music", "Clubs", "Competitions"],
+    highlights: [],
+    meta: {
+      heroVariant: "full",
+      sections: [
+        {
+          id: "safe-campus-overview",
+          type: "textList",
+          title: "A Campus Built For Safety",
+          body:
+            "Student wellbeing is supported through careful supervision, secure entry systems, emergency preparedness and a disciplined campus culture.",
+          theme: "light",
+          variant: "checklist-split-light",
+          eyebrow: "Campus Safety",
+          mediaUrl:
+            "https://images.unsplash.com/photo-1497486751825-1233686d5d80?q=80&w=1400&auto=format&fit=crop",
+          items: [
+            { text: "Secure campus entry and monitored movement" },
+            { text: "Teacher and staff supervision across the day" },
+            { text: "Clean classrooms, corridors and common areas" },
+            { text: "Emergency preparedness and safety procedures" },
+            { text: "Student discipline with care and guidance" },
+            { text: "Parent trust through responsible administration" },
+          ],
+        },
+        {
+          id: "safe-campus-features",
+          type: "cards",
+          title: "Safety Features",
+          body: "",
+          theme: "dark",
+          columns: 4,
+          align: "left",
+          variant: "default",
+          items: [
+            {
+              title: "Trained Staff",
+              text: "Teachers and support staff help maintain discipline, supervision and a calm environment.",
+              icon: "Users",
+            },
+            {
+              title: "Emergency Readiness",
+              text: "Important processes are in place for safety response, evacuation and student protection.",
+              icon: "ShieldCheck",
+            },
+            {
+              title: "Healthy Environment",
+              text: "Clean drinking water, sanitation and hygiene standards support daily student wellbeing.",
+              icon: "HeartHandshake",
+            },
+            {
+              title: "Safe Infrastructure",
+              text: "Campus facilities are maintained to support secure movement and responsible use of spaces.",
+              icon: "Building2",
+            },
+          ],
+        },
+        {
+          id: "safe-campus-documents",
+          type: "documentsTable",
+          title: "Campus Safety Documents",
+          label: "Safety Certificates & Compliance",
+          items: [
+            { name: "Building Safety Certificate", fileUrl: "#" },
+            { name: "Fire Safety Certificate", fileUrl: "#" },
+            { name: "Water & Sanitation Certificate", fileUrl: "#" },
+            { name: "Transport Safety Details", fileUrl: "#" },
+          ],
+        },
+        {
+          id: "safe-campus-cta",
+          type: "split",
+          title: "A Safe Place To Learn And Grow",
+          body:
+            "Families choose schools they can trust. A safe campus gives students confidence, consistency and the freedom to focus on learning.",
+          theme: "light",
+          variant: "panel-split",
+          ctaLabel: "Contact School",
+          ctaHref: "/contact-us",
+          sideTitle: "Safety With Responsibility",
+          sideBody: "Discipline, care and infrastructure come together to support every child every day.",
+          sideIcon: "ShieldCheck",
+        },
+      ],
+    },
+  },
+  coCurricular: {
+    eyebrow: "Student Development",
+    title: "Holistic Growth",
+    image:
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1800&auto=format&fit=crop",
+    body: [
+      "Beyond academics, students grow through creativity, communication, confidence, leadership and values-based learning.",
+    ],
+    highlights: [],
+    meta: {
+      heroVariant: "full",
+      sections: [
+        {
+          id: "holistic-growth-overview",
+          type: "textList",
+          title: "Growth Beyond The Classroom",
+          body:
+            "A complete school journey includes personality development, communication, creativity, teamwork and confidence-building experiences.",
+          theme: "light",
+          variant: "checklist-split-light",
+          eyebrow: "All-Round Development",
+          mediaUrl:
+            "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1400&auto=format&fit=crop",
+          items: [
+            { text: "Communication and public speaking" },
+            { text: "Creative arts and self-expression" },
+            { text: "Teamwork, respect and collaboration" },
+            { text: "Leadership opportunities for students" },
+            { text: "Confidence through participation" },
+            { text: "Value-based habits for life" },
+          ],
+        },
+        {
+          id: "holistic-growth-pillars",
+          type: "cards",
+          title: "How We Support Growth",
+          body: "",
+          theme: "dark",
+          columns: 4,
+          align: "left",
+          variant: "default",
+          items: [
+            {
+              title: "Creative Learning",
+              text: "Art, music, expression and activity-based experiences help students discover their strengths.",
+              icon: "Palette",
+            },
+            {
+              title: "Leadership",
+              text: "Responsibilities, stage participation and teamwork help students become confident decision-makers.",
+              icon: "Trophy",
+            },
+            {
+              title: "Life Skills",
+              text: "Discipline, empathy, communication and responsibility shape students for the real world.",
+              icon: "Sparkles",
+            },
+            {
+              title: "Balanced Development",
+              text: "Academics, activities and values work together to create complete personal growth.",
+              icon: "HeartHandshake",
+            },
+          ],
+        },
+        {
+          id: "holistic-growth-journey",
+          type: "split",
+          title: "Preparing Students For Life",
+          body:
+            "The right school environment helps children become capable learners and strong individuals who can adapt, lead and contribute with confidence.",
+          theme: "light",
+          variant: "panel-split",
+          ctaLabel: "Explore Campus Life",
+          ctaHref: "/sports-facilities",
+          sideTitle: "Growth That Lasts",
+          sideBody: "Every activity, interaction and opportunity adds to the child’s confidence and character.",
+          sideIcon: "GraduationCap",
+        },
+      ],
+    },
   },
   scholarships: {
     eyebrow: "Admissions",

@@ -1,7 +1,21 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import useManagedSection from "../hooks/useManagedSection.js";
 import { ensureArray, resolveIcon } from "../utils/publicContent.js";
+
+function getCardHref(item = {}) {
+  if (item.href) return item.href;
+
+  const title = String(item.title || "").trim().toLowerCase();
+
+  if (title.includes("academic")) return "/academics";
+  if (title.includes("safe campus") || title.includes("campus")) return "/safe-campus";
+  if (title.includes("smart learning") || title.includes("smart")) return "/smart-classes";
+  if (title.includes("holistic")) return "/holistic-growth";
+
+  return "/about-us";
+}
 
 const fallbackWhyChooseUs = {
   eyebrow: "Why Choose Us",
@@ -14,24 +28,28 @@ const fallbackWhyChooseUs = {
         image: "/images/people/principal.jpeg",
         text: "Strong academics with modern teaching methods and outstanding results.",
         icon: "Trophy",
+        href: "/academics",
       },
       {
         title: "Safe Campus",
         image: "/images/people/director.jpeg",
         text: "Secure environment with discipline, care and student wellbeing.",
         icon: "ShieldCheck",
+        href: "/safe-campus",
       },
       {
         title: "Smart Learning",
         image: "/images/people/founder.jpeg",
         text: "Technology-enabled classrooms and practical learning exposure.",
         icon: "BookOpen",
+        href: "/smart-classes",
       },
       {
         title: "Holistic Growth",
         image: "/udaan-world-logo.jpeg",
         text: "Sports, arts, values and leadership development together.",
         icon: "HeartHandshake",
+        href: "/holistic-growth",
       },
     ],
   },
@@ -88,6 +106,7 @@ export default function WhyChooseUs() {
 
 function WhyChooseCard({ item, index }) {
   const Icon = resolveIcon(item.icon, Sparkles);
+  const href = getCardHref(item);
 
   return (
     <motion.article
@@ -118,10 +137,13 @@ function WhyChooseCard({ item, index }) {
         <h3 className="mt-5 text-2xl font-black text-white md:text-3xl">{item.title}</h3>
         <div className="mt-3 h-[3px] w-[90px] rounded-full bg-cyan-400" />
         <p className="mt-5 text-sm leading-7 text-white/70 md:text-base">{item.text}</p>
-        <span className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-300">
+        <Link
+          to={href}
+          className="mt-6 inline-flex items-center gap-2 font-semibold text-cyan-300 transition duration-300 hover:translate-x-1 hover:text-cyan-200"
+        >
           Learn More
           <ArrowRight size={18} />
-        </span>
+        </Link>
       </div>
     </motion.article>
   );

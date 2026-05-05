@@ -1,4 +1,4 @@
-import { Bell, Building, Globe, MapPin, Shield, User } from "lucide-react";
+import { Bell, Building, Eye, EyeOff, Globe, MapPin, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 
@@ -42,6 +42,12 @@ const emptyPasswordForm = {
   confirmPassword: "",
 };
 
+const defaultPasswordVisibility = {
+  currentPassword: false,
+  newPassword: false,
+  confirmPassword: false,
+};
+
 export default function Settings() {
   const [settings, setSettings] = useState(defaultSettings);
   const [admin, setAdmin] = useState(null);
@@ -50,6 +56,7 @@ export default function Settings() {
   const [passwordForm, setPasswordForm] = useState(emptyPasswordForm);
   const [passwordMessage, setPasswordMessage] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordVisibility, setPasswordVisibility] = useState(defaultPasswordVisibility);
 
   useEffect(() => {
     fetchSettings();
@@ -137,6 +144,7 @@ export default function Settings() {
       });
       setPasswordMessage(res.data?.message || "Password updated successfully.");
       setPasswordForm(emptyPasswordForm);
+      setPasswordVisibility(defaultPasswordVisibility);
     } catch (error) {
       console.error(error);
       setPasswordMessage(error.response?.data?.message || "Unable to update password.");
@@ -199,9 +207,42 @@ export default function Settings() {
             <ToggleRow label="Two-Factor Preference" checked={Boolean(settings.meta.security.twoFactorEnabled)} onChange={(checked) => updateGroup("security", "twoFactorEnabled", checked)} />
             <div className="space-y-3 border-t pt-4">
               <p className="text-sm font-semibold text-gray-900">Reset Admin Password</p>
-              <Input value={passwordForm.currentPassword} onChange={(v) => setPasswordForm((prev) => ({ ...prev, currentPassword: v }))} placeholder="Current Password" type="password" />
-              <Input value={passwordForm.newPassword} onChange={(v) => setPasswordForm((prev) => ({ ...prev, newPassword: v }))} placeholder="New Password" type="password" />
-              <Input value={passwordForm.confirmPassword} onChange={(v) => setPasswordForm((prev) => ({ ...prev, confirmPassword: v }))} placeholder="Confirm New Password" type="password" />
+              <PasswordInput
+                value={passwordForm.currentPassword}
+                onChange={(v) => setPasswordForm((prev) => ({ ...prev, currentPassword: v }))}
+                placeholder="Current Password"
+                visible={passwordVisibility.currentPassword}
+                onToggle={() =>
+                  setPasswordVisibility((prev) => ({
+                    ...prev,
+                    currentPassword: !prev.currentPassword,
+                  }))
+                }
+              />
+              <PasswordInput
+                value={passwordForm.newPassword}
+                onChange={(v) => setPasswordForm((prev) => ({ ...prev, newPassword: v }))}
+                placeholder="New Password"
+                visible={passwordVisibility.newPassword}
+                onToggle={() =>
+                  setPasswordVisibility((prev) => ({
+                    ...prev,
+                    newPassword: !prev.newPassword,
+                  }))
+                }
+              />
+              <PasswordInput
+                value={passwordForm.confirmPassword}
+                onChange={(v) => setPasswordForm((prev) => ({ ...prev, confirmPassword: v }))}
+                placeholder="Confirm New Password"
+                visible={passwordVisibility.confirmPassword}
+                onToggle={() =>
+                  setPasswordVisibility((prev) => ({
+                    ...prev,
+                    confirmPassword: !prev.confirmPassword,
+                  }))
+                }
+              />
               <button onClick={changePassword} disabled={changingPassword} className="w-full rounded-lg bg-slate-900 px-4 py-2 text-white disabled:opacity-60">
                 {changingPassword ? "Updating Password..." : "Update Password"}
               </button>
@@ -240,6 +281,28 @@ function Card({ title, icon: Icon, children }) {
 
 function Input({ value, onChange, placeholder, disabled = false, type = "text" }) {
   return <input type={type} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-full rounded-lg border border-gray-300 px-4 py-2 disabled:bg-gray-100" placeholder={placeholder} />;
+}
+
+function PasswordInput({ value, onChange, placeholder, visible, onToggle }) {
+  return (
+    <div className="relative">
+      <input
+        type={visible ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12"
+        placeholder={placeholder}
+      />
+      <button
+        type="button"
+        onClick={onToggle}
+        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-500 transition hover:text-gray-700"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
 }
 
 function TextArea({ value, onChange, placeholder, rows = 4 }) {

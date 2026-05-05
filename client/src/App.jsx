@@ -111,6 +111,8 @@ export default function App() {
           <Route path="labs" element={<StandardPage pageKey="labs" />} />
           <Route path="teachers" element={<TeachersPage />} />
           <Route path="academic-facilities" element={<StandardPage pageKey="academicFacilities" />} />
+          <Route path="safe-campus" element={<StandardPage pageKey="safeCampus" />} />
+          <Route path="holistic-growth" element={<StandardPage pageKey="coCurricular" />} />
           <Route path="co-curricular-facilities" element={<StandardPage pageKey="coCurricular" />} />
           <Route path="scholarships" element={<StandardPage pageKey="scholarships" />} />
           <Route path="sports-facilities" element={<StandardPage pageKey="sportsFacilities" />} />

@@ -17,6 +17,7 @@ const documentExtensions = new Set([
   ".docx",
   ".xls",
   ".xlsx",
+  
   ".ppt",
   ".pptx",
   ".csv",

@@ -585,24 +585,28 @@ function buildFallbackPage(key) {
             text: "Strong academics with modern teaching methods and outstanding results.",
             image: "/images/people/principal.jpeg",
             icon: "Trophy",
+            href: "/academics",
           },
           {
             title: "Safe Campus",
             text: "Secure environment with discipline, care and student wellbeing.",
             image: "/images/people/director.jpeg",
             icon: "ShieldCheck",
+            href: "/safe-campus",
           },
           {
             title: "Smart Learning",
             text: "Technology-enabled classrooms and practical learning exposure.",
             image: "/images/people/founder.jpeg",
             icon: "BookOpen",
+            href: "/smart-classes",
           },
           {
             title: "Holistic Growth",
             text: "Sports, arts, values and leadership development together.",
             image: "/udaan-world-logo.jpeg",
             icon: "HeartHandshake",
+            href: "/holistic-growth",
           },
         ],
       },
@@ -1249,7 +1253,7 @@ export default function PageEditor() {
             <ObjectListEditor
               title="Feature Cards"
               items={content.meta?.cards || []}
-              fields={["title", "text", "image", "icon"]}
+              fields={["title", "text", "image", "icon", "href"]}
               onChange={(items) => updateMeta("cards", items)}
               onUpload={uploadAsset}
             />

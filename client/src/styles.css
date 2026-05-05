@@ -503,15 +503,26 @@ a {
 }
 
 .contact-cards {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.9fr) minmax(0, 1.3fr);
   margin-top: 28px;
 }
 
 .contact-cards article {
+  display: flex;
+  min-height: 224px;
+  flex-direction: column;
+  justify-content: flex-start;
   border-radius: 22px;
   padding: 20px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.contact-cards article:hover {
+  transform: translateY(-4px);
+  border-color: rgba(125, 211, 252, 0.28);
+  box-shadow: 0 18px 36px rgba(8, 47, 73, 0.24);
 }
 
 .contact-cards article b {
@@ -524,6 +535,39 @@ a {
 .contact-cards article p {
   margin: 0;
   font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.contact-card-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-card-links a {
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.contact-card-links a:hover {
+  color: #7dd3fc;
+  transform: translateX(2px);
+}
+
+.contact-email-card {
+  min-width: 0;
+}
+
+.contact-email-link {
+  min-width: 0;
+}
+
+.contact-email-link a {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .teacher-table-wrap {

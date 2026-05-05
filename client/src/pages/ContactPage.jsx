@@ -66,13 +66,21 @@ export default function ContactPage() {
             <article>
               <Icons.Phone />
               <b>Phone</b>
-              <p>{schoolInfo.phone.join(", ")}</p>
+              <p className="contact-card-links">
+                {schoolInfo.phone.map((phone) => (
+                  <a key={phone} href={`tel:${phone.replace(/\s+/g, "")}`}>
+                    {phone}
+                  </a>
+                ))}
+              </p>
             </article>
 
-            <article>
+            <article className="contact-email-card">
               <Icons.Mail />
               <b>Email</b>
-              <p>{schoolInfo.email}</p>
+              <p className="contact-card-links contact-email-link">
+                <a href={`mailto:${schoolInfo.email}`}>{schoolInfo.email}</a>
+              </p>
             </article>
           </div>
         </div>
