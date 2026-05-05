@@ -5,9 +5,31 @@ import useManagedSection from "../hooks/useManagedSection.js";
 import { ensureArray, resolveIcon } from "../utils/publicContent.js";
 
 function getCardHref(item = {}) {
-  if (item.href) return item.href;
-
   const title = String(item.title || "").trim().toLowerCase();
+  const rawHref = String(item.href || "").trim();
+
+  if (title.includes("safe campus")) {
+    if (
+      !rawHref ||
+      rawHref === "/mandatory-public-disclosure" ||
+      rawHref === "/facilities" ||
+      rawHref === "/about-us"
+    ) {
+      return "/safe-campus";
+    }
+  }
+
+  if (title.includes("holistic")) {
+    if (
+      !rawHref ||
+      rawHref === "/co-curricular-facilities" ||
+      rawHref === "/about-us"
+    ) {
+      return "/holistic-growth";
+    }
+  }
+
+  if (rawHref) return rawHref;
 
   if (title.includes("academic")) return "/academics";
   if (title.includes("safe campus") || title.includes("campus")) return "/safe-campus";
