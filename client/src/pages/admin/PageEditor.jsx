@@ -740,6 +740,42 @@ function getAdminSectionLabel(pageKey, section) {
   return `${formatPageKeyLabel(pageKey)} - ${formatSectionIdLabel(section.id, section.type)}`;
 }
 
+function normalizeWhyChooseUsCards(cards = []) {
+  return (cards || []).map((card) => {
+    const title = String(card?.title || "").trim().toLowerCase();
+
+    if (title.includes("safe campus")) {
+      return {
+        ...card,
+        href: "/safe-campus",
+      };
+    }
+
+    if (title.includes("holistic")) {
+      return {
+        ...card,
+        href: "/holistic-growth",
+      };
+    }
+
+    if (title.includes("academic")) {
+      return {
+        ...card,
+        href: card.href || "/academics",
+      };
+    }
+
+    if (title.includes("smart")) {
+      return {
+        ...card,
+        href: card.href || "/smart-classes",
+      };
+    }
+
+    return card;
+  });
+}
+
 export default function PageEditor() {
   const { key } = useParams();
   const navigate = useNavigate();
@@ -782,10 +818,10 @@ export default function PageEditor() {
             ...(page.meta || {}),
             cards:
               Array.isArray(page.meta?.cards) && page.meta.cards.length
-                ? page.meta.cards.map((card, index) => ({
+                ? normalizeWhyChooseUsCards(page.meta.cards.map((card, index) => ({
                     ...(fallback.meta.cards?.[index] || {}),
                     ...card,
-                  }))
+                  })))
                 : fallback.meta.cards,
             items:
               Array.isArray(page.meta?.items) && page.meta.items.length
@@ -956,12 +992,28 @@ export default function PageEditor() {
   }
 
   function updateSectionItem(sectionId, itemIndex, field, value) {
-    const sections = (content.meta?.sections || []).map((section) => {
-      if (section.id !== sectionId) return section;
-      if (section.type === "eventGallery" || section.type === "managedGallery") {
-        const items = Array.from({ length: Math.max(section.items?.length || 0, itemIndex + 1) }, (_, index) => (
-          section.items?.[index] || { url: "", caption: "" }
-        ));
+    setContent((prev) => {
+      const sections = (prev.meta?.sections || []).map((section) => {
+        if (section.id !== sectionId) return section;
+
+        if (section.type === "eventGallery" || section.type === "managedGallery") {
+          const items = Array.from(
+            { length: Math.max(section.items?.length || 0, itemIndex + 1) },
+            (_, index) => section.items?.[index] || { url: "", caption: "" }
+          );
+
+          return {
+            ...section,
+            items: items.map((item, index) =>
+              index === itemIndex ? { ...item, [field]: value } : item
+            ),
+          };
+        }
+
+        const items = Array.from(
+          { length: Math.max(section.items?.length || 0, itemIndex + 1) },
+          (_, index) => section.items?.[index] || {}
+        );
 
         return {
           ...section,
@@ -969,15 +1021,16 @@ export default function PageEditor() {
             index === itemIndex ? { ...item, [field]: value } : item
           ),
         };
-      }
+      });
+
       return {
-        ...section,
-        items: (section.items || []).map((item, index) =>
-          index === itemIndex ? { ...item, [field]: value } : item
-        ),
+        ...prev,
+        meta: {
+          ...(prev.meta || {}),
+          sections: ensureRequiredSections(key, sections),
+        },
       };
     });
-    updateSections(sections);
   }
 
   function removeSectionItem(sectionId, itemIndex) {
@@ -1022,6 +1075,10 @@ export default function PageEditor() {
         .filter(Boolean),
       meta: {
         ...(content.meta || {}),
+        cards:
+          key === "homeWhyChooseUs"
+            ? normalizeWhyChooseUsCards(content.meta?.cards || [])
+            : content.meta?.cards,
         sections: isHomePage
           ? enrichDocumentSections(content.meta?.sections)
           : enrichDocumentSections(ensureRequiredSections(key, content.meta?.sections || [])),
