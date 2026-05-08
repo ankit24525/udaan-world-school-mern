@@ -9,7 +9,7 @@ export default function Topbar() {
   }, [dark]);
 
   return (
-    <div className="flex justify-between items-center px-6 py-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border-b">
+    <div className="flex justify-between items-center border-b border-slate-200 bg-white/60 px-6 py-4 backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/60">
       <h1 className="text-lg font-semibold">Admin Dashboard</h1>
 
       <button

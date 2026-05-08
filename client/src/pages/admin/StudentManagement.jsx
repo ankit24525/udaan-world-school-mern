@@ -99,25 +99,25 @@ export default function StudentManagement() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="min-h-screen bg-gray-50 p-6 dark:bg-[#0b1120]">
 
       {/* 🔥 TOP BAR */}
-      <div className="bg-white p-4 rounded-xl shadow border flex justify-between flex-wrap gap-4 mb-4">
+      <div className="mb-4 flex flex-wrap justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
 
         <div className="flex gap-3">
 
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-slate-500" size={18} />
             <input
               placeholder="Search..."
-              className="pl-10 pr-4 py-2 border rounded-lg"
+              className="rounded-lg border border-slate-300 py-2 pl-10 pr-4 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
           {/* CLASS */}
           <select
-            className="border px-3 py-2 rounded-lg"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
             value={classFilter}
             onChange={(e) => {
               const val = e.target.value;
@@ -136,7 +136,7 @@ export default function StudentManagement() {
 
           {/* SECTION */}
           <select
-            className="border px-3 py-2 rounded-lg"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white"
             value={sectionFilter}
             onChange={(e) => setSectionFilter(e.target.value)}
           >
@@ -152,14 +152,14 @@ export default function StudentManagement() {
 
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 border rounded-lg"
+            className="flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
           >
             <Download size={16}/> Export
           </button>
 
           <button
             onClick={() => setShowImport(true)}
-            className="flex items-center gap-2 px-4 py-2 border rounded-lg"
+            className="flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
           >
             <Upload size={16}/> Import
           </button>
@@ -177,11 +177,11 @@ export default function StudentManagement() {
       </div>
 
       {/* 🔥 TABLE */}
-      <div className="bg-white rounded-xl shadow border overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
 
         <table className="min-w-full table-fixed text-sm">
 
-          <thead className="bg-gray-50 border-b text-xs text-gray-500 uppercase">
+          <thead className="border-b bg-gray-50 text-xs uppercase text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
             <tr>
               <th className="w-12 px-4 py-3">
                 <input
@@ -207,7 +207,7 @@ export default function StudentManagement() {
           <tbody className="divide-y">
 
             {students.map((s) => (
-              <tr key={s._id} className="hover:bg-gray-50">
+              <tr key={s._id} className="hover:bg-gray-50 dark:hover:bg-white/5">
 
                 <td className="px-4 py-3">
                   <input
@@ -221,7 +221,7 @@ export default function StudentManagement() {
                   {s._id.slice(-5)}
                 </td>
 
-                <td className="px-4 py-3 font-medium truncate whitespace-nowrap">
+                <td className="px-4 py-3 font-medium truncate whitespace-nowrap text-slate-900 dark:text-white">
                   {s.name}
                 </td>
 
@@ -233,7 +233,7 @@ export default function StudentManagement() {
                   {s.rollNumber}
                 </td>
 
-                <td className="px-4 py-3 truncate whitespace-nowrap">
+                <td className="px-4 py-3 truncate whitespace-nowrap text-slate-700 dark:text-slate-300">
                   {s.email}
                 </td>
 
@@ -252,10 +252,10 @@ export default function StudentManagement() {
 
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    <button onClick={() => navigate(`/admin/students/${s._id}`)}>
+                    <button onClick={() => navigate(`/admin/students/${s._id}`)} className="text-slate-700 dark:text-slate-300">
                       <Eye size={16}/>
                     </button>
-                    <button onClick={() => navigate(`/admin/students/${s._id}`)}>
+                    <button onClick={() => navigate(`/admin/students/${s._id}`)} className="text-slate-700 dark:text-slate-300">
                       <Edit size={16}/>
                     </button>
                     <button onClick={() => handleDelete(s._id)}>

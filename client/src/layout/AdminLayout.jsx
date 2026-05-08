@@ -44,7 +44,7 @@ export default function AdminLayout() {
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <Topbar />
-        <main className="overflow-y-auto p-6">
+        <main className="admin-theme overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

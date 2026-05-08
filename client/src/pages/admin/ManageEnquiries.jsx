@@ -47,6 +47,12 @@ export default function ManageEnquiries() {
     loadEnquiries();
   }, []);
 
+  const statusClasses = {
+    new: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    contacted: "border-amber-200 bg-amber-50 text-amber-700",
+    closed: "border-slate-200 bg-slate-50 text-slate-700",
+  };
+
   return (
     <section className="inner-page">
       <div className="section-title">
@@ -89,6 +95,7 @@ export default function ManageEnquiries() {
                     onChange={(event) =>
                       updateStatus(item._id, event.target.value)
                     }
+                    className={`min-w-[130px] rounded-full border px-3 py-2 text-sm font-medium outline-none transition focus:border-[#C3292D] ${statusClasses[item.status] || "border-slate-200 bg-white text-slate-700"}`}
                   >
                     <option value="new">New</option>
                     <option value="contacted">Contacted</option>
@@ -96,7 +103,11 @@ export default function ManageEnquiries() {
                   </select>
                 </td>
                 <td>
-  <button type="button" onClick={() => deleteEnquiry(item._id)}>
+  <button
+    type="button"
+    onClick={() => deleteEnquiry(item._id)}
+    className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+  >
     Delete
   </button>
 </td>

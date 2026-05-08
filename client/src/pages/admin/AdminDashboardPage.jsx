@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
         <div className="mb-8 space-y-4">
           <div className="shadow-shimmer-line h-5 w-32" />
           <div className="shadow-shimmer-line h-12 w-72 max-w-full" />
@@ -114,7 +114,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="rounded-2xl bg-slate-50 p-4 shadow-sm">
+                <div key={index} className="rounded-2xl bg-slate-50 p-4 shadow-sm dark:bg-white/5">
                   <div className="shadow-shimmer-line h-4 w-full" />
                   <div className="mt-3 shadow-shimmer-line h-3 w-24" />
                 </div>
@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="rounded-2xl bg-slate-50 p-4 shadow-sm">
+                <div key={index} className="rounded-2xl bg-slate-50 p-4 shadow-sm dark:bg-white/5">
                   <div className="flex items-center justify-between">
                     <div className="shadow-shimmer-line h-6 w-16" />
                     <div className="shadow-shimmer-line h-4 w-10" />
@@ -145,14 +145,14 @@ export default function AdminDashboardPage() {
   }
 
   if (error) {
-    return <div className="min-h-screen bg-gray-50 p-8 text-red-600">{error}</div>;
+    return <div className="min-h-screen bg-gray-50 p-8 text-red-600 dark:bg-[#0b1120] dark:text-red-300">{error}</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-500">Welcome back! Here’s what’s happening across the school right now.</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="mt-2 text-gray-500 dark:text-slate-400">Welcome back! Here’s what’s happening across the school right now.</p>
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -163,21 +163,21 @@ export default function AdminDashboardPage() {
 
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         {quickStats.map((item) => (
-          <div key={item.label} className="rounded-xl border bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-3 text-slate-500">
-              <div className="rounded-lg bg-slate-100 p-2 text-slate-700">{item.icon}</div>
+          <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20 dark:hover:border-cyan-400/40 dark:hover:bg-slate-900">
+            <div className="flex items-center gap-3 text-slate-500 dark:text-slate-300">
+              <div className="rounded-lg bg-slate-100 p-2 text-slate-700 dark:bg-white/10 dark:text-white">{item.icon}</div>
               <span className="text-sm font-medium">{item.label}</span>
             </div>
-            <div className="mt-4 text-3xl font-bold text-slate-900">{item.value}</div>
+            <div className="mt-4 text-3xl font-bold text-slate-900 dark:text-white">{item.value}</div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl border bg-white p-6 shadow-sm">
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
           <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Recent Activity</h2>
-            <Bell className="w-5 h-5 text-gray-400" />
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent Activity</h2>
+            <Bell className="w-5 h-5 text-gray-400 dark:text-slate-500" />
           </div>
 
           <div className="space-y-4">
@@ -186,15 +186,15 @@ export default function AdminDashboardPage() {
             ))}
 
             {!dashboard?.recentActivity?.length ? (
-              <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-500">No recent activity yet.</div>
+              <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-500 dark:bg-white/5 dark:text-slate-400">No recent activity yet.</div>
             ) : null}
           </div>
         </div>
 
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
           <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Pending Actions</h2>
-            <TrendingUp className="w-5 h-5 text-gray-400" />
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Pending Actions</h2>
+            <TrendingUp className="w-5 h-5 text-gray-400 dark:text-slate-500" />
           </div>
 
           <div className="space-y-3">
@@ -205,7 +205,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col justify-between gap-4 rounded-xl bg-gradient-to-r from-[#C3292D] to-[#A01F23] p-6 text-white shadow md:flex-row md:items-center">
+      <div className="mt-6 flex flex-col justify-between gap-4 rounded-xl bg-gradient-to-r from-[#C3292D] to-[#A01F23] p-6 text-white shadow md:flex-row md:items-center dark:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
         <div>
           <h3 className="mb-1 text-xl font-semibold">Admissions In Motion</h3>
           <p className="text-white/90">
@@ -215,7 +215,7 @@ export default function AdminDashboardPage() {
 
         <button
           onClick={() => navigate("/admin/admissions")}
-          className="rounded-lg bg-white px-6 py-2 font-medium text-[#C3292D] transition hover:bg-gray-100"
+          className="rounded-lg bg-white px-6 py-2 font-medium text-[#C3292D] transition hover:-translate-y-0.5 hover:bg-gray-100"
         >
           Manage Admissions
         </button>
@@ -226,7 +226,7 @@ export default function AdminDashboardPage() {
 
 function StatCard({ icon, color, value, label, change }) {
   return (
-    <div className="rounded-xl border bg-white p-6 shadow-sm transition hover:shadow-md">
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20 dark:hover:border-cyan-400/40 dark:hover:bg-slate-900">
       <div className="mb-4 flex justify-between items-center">
         <div className={`${color} rounded-lg p-3 text-white`}>
           {icon}
@@ -234,19 +234,19 @@ function StatCard({ icon, color, value, label, change }) {
         <span className="text-sm font-medium text-green-600">{change}</span>
       </div>
 
-      <div className="text-2xl font-bold text-gray-900">{value}</div>
-      <div className="mt-1 text-sm text-gray-500">{label}</div>
+      <div className="text-2xl font-bold text-gray-900 dark:text-white">{value}</div>
+      <div className="mt-1 text-sm text-gray-500 dark:text-slate-400">{label}</div>
     </div>
   );
 }
 
 function Activity({ text, time }) {
   return (
-    <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100">
+    <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10">
       <div className="mt-2 h-2 w-2 rounded-full bg-[#C3292D]" />
       <div>
-        <p className="text-sm text-gray-900">{text}</p>
-        <p className="mt-1 text-xs text-gray-500">{time}</p>
+        <p className="text-sm text-gray-900 dark:text-slate-100">{text}</p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">{time}</p>
       </div>
     </div>
   );
@@ -254,20 +254,23 @@ function Activity({ text, time }) {
 
 function Action({ text, count, type, onClick }) {
   const styles = {
-    high: "bg-red-100 text-red-700",
-    medium: "bg-yellow-100 text-yellow-700",
-    low: "bg-gray-100 text-gray-700",
+    high: "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300",
+    medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-300",
+    low: "bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-slate-300",
   };
 
   return (
-    <button onClick={onClick} className="w-full cursor-pointer rounded-lg border p-4 text-left transition hover:border-[#C3292D]">
+    <button
+      onClick={onClick}
+      className="w-full cursor-pointer rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-[#C3292D] hover:shadow-sm dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+    >
       <div className="mb-2 flex justify-between">
         <span className={`rounded-full px-2 py-1 text-xs ${styles[type]}`}>
           {type}
         </span>
         <span className="text-sm font-semibold text-[#C3292D]">{count}</span>
       </div>
-      <p className="text-sm text-gray-900">{text}</p>
+      <p className="text-sm text-gray-900 dark:text-slate-100">{text}</p>
     </button>
   );
 }

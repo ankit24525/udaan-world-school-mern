@@ -156,11 +156,11 @@ export default function GalleryManagement() {
   const ActiveIcon = activeConfig.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Gallery Management</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Gallery Management</h1>
+          <p className="mt-2 text-gray-600 dark:text-slate-400">
             Manage photos, videos and event gallery media that appear on the public gallery pages.
           </p>
         </div>
@@ -174,8 +174,8 @@ export default function GalleryManagement() {
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white shadow">
-        <div className="flex gap-6 border-b px-6 pt-4">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
+        <div className="flex gap-6 border-b border-slate-200 px-6 pt-4 dark:border-white/10">
           {Object.entries(galleryTabs).map(([key, config]) => {
             const TabIcon = config.icon;
             const isActive = key === activeTab;
@@ -184,7 +184,7 @@ export default function GalleryManagement() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex items-center gap-2 border-b-2 pb-4 ${isActive ? "border-[#C3292D] font-medium text-[#C3292D]" : "border-transparent text-gray-600 hover:text-gray-900"}`}
+                className={`flex items-center gap-2 border-b-2 pb-4 ${isActive ? "border-[#C3292D] font-medium text-[#C3292D]" : "border-transparent text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"}`}
               >
                 <TabIcon size={16} />
                 {config.label}
@@ -193,7 +193,7 @@ export default function GalleryManagement() {
           })}
         </div>
 
-        <div className="border-b px-6 py-4 text-sm text-gray-600">
+        <div className="border-b border-slate-200 px-6 py-4 text-sm text-gray-600 dark:border-white/10 dark:text-slate-400">
           {activeTab === "photos" ? "Upload campus, classroom and school life photos." : null}
           {activeTab === "videos" ? "Upload video files or add video URLs with optional thumbnail images." : null}
           {activeTab === "events" ? "Upload celebration and event photos for the Events Gallery page." : null}
@@ -219,8 +219,8 @@ export default function GalleryManagement() {
                 const previewUrl = item.imageUrl || item.videoUrl;
 
                 return (
-                  <article key={item._id} className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-                    <div className="aspect-video bg-gray-100">
+                  <article key={item._id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-slate-900 dark:shadow-black/20 dark:hover:border-cyan-400/40">
+                    <div className="aspect-video bg-gray-100 dark:bg-white/5">
                       {activeTab === "videos" ? (
                         item.imageUrl ? (
                           <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
@@ -230,7 +230,7 @@ export default function GalleryManagement() {
                       ) : previewUrl ? (
                         <img src={previewUrl} alt={item.title} className="h-full w-full object-cover" />
                       ) : (
-                        <div className="flex h-full items-center justify-center text-gray-400">
+                        <div className="flex h-full items-center justify-center text-gray-400 dark:text-slate-500">
                           <ActiveIcon size={34} />
                         </div>
                       )}
@@ -239,9 +239,9 @@ export default function GalleryManagement() {
                     <div className="space-y-3 p-5">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white">{item.title}</h3>
                           {item.excerpt ? (
-                            <p className="mt-1 text-sm leading-6 text-slate-600">{item.excerpt}</p>
+                            <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.excerpt}</p>
                           ) : null}
                         </div>
                         <span className={`rounded-full px-2 py-1 text-xs font-semibold ${item.published === false ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>
@@ -249,7 +249,7 @@ export default function GalleryManagement() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-slate-500">
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                         <span>{galleryTabs[normalizeGalleryType(item.category || item.meta?.galleryType)]?.label || "Gallery"}</span>
                         <span>{new Date(item.updatedAt || item.createdAt).toLocaleDateString()}</span>
                       </div>
@@ -257,7 +257,7 @@ export default function GalleryManagement() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditEditor(item)}
-                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
                         >
                           <Pencil size={14} />
                           Edit
@@ -266,7 +266,7 @@ export default function GalleryManagement() {
                           href={item.videoUrl || item.imageUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-lg border px-3 py-2 text-slate-700 hover:bg-slate-50"
+                          className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
                         >
                           <Eye size={14} />
                         </a>
@@ -283,7 +283,7 @@ export default function GalleryManagement() {
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed p-10 text-center text-gray-500">
+            <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-gray-500 dark:border-white/10 dark:text-slate-400">
               No media added in this gallery yet. Add your first item to make it appear on the public page.
             </div>
           )}
@@ -292,15 +292,15 @@ export default function GalleryManagement() {
 
       {isEditorOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-950 dark:shadow-black/40">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/10">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                   {editingItem ? "Edit Gallery Item" : "Add Gallery Item"}
                 </h2>
-                <p className="text-sm text-slate-500">{activeConfig.label}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{activeConfig.label}</p>
               </div>
-              <button onClick={closeEditor} className="rounded-full p-2 text-slate-500 hover:bg-slate-100">
+              <button onClick={closeEditor} className="rounded-full p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10">
                 <X size={18} />
               </button>
             </div>
@@ -320,11 +320,11 @@ export default function GalleryManagement() {
                 className="h-28 w-full rounded-lg border px-4 py-3"
               />
 
-              <div className="rounded-xl border bg-slate-50 p-4">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-white/5">
                 <div className="mb-3 flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-slate-900">{activeTab === "videos" ? "Video File / URL" : "Gallery Image"}</p>
-                    <p className="text-sm text-slate-500">This media will appear on the public gallery page.</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{activeTab === "videos" ? "Video File / URL" : "Gallery Image"}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">This media will appear on the public gallery page.</p>
                   </div>
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#C3292D] px-3 py-2 text-sm font-medium text-white hover:bg-[#A01F23]">
                     <Upload size={14} />
@@ -352,11 +352,11 @@ export default function GalleryManagement() {
               </div>
 
               {activeTab === "videos" ? (
-                <div className="rounded-xl border bg-slate-50 p-4">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-white/5">
                   <div className="mb-3 flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-slate-900">Video Thumbnail</p>
-                      <p className="text-sm text-slate-500">Optional cover image for the public video gallery cards.</p>
+                      <p className="font-medium text-slate-900 dark:text-white">Video Thumbnail</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">Optional cover image for the public video gallery cards.</p>
                     </div>
                     <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">
                       <Upload size={14} />
@@ -384,7 +384,7 @@ export default function GalleryManagement() {
                 </div>
               ) : null}
 
-              <label className="flex items-center gap-3 text-sm text-slate-700">
+              <label className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                 <input
                   type="checkbox"
                   checked={form.published}
@@ -394,25 +394,25 @@ export default function GalleryManagement() {
               </label>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border p-4">
-                  <p className="mb-3 text-sm font-medium text-slate-700">Preview</p>
+                <div className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
+                  <p className="mb-3 text-sm font-medium text-slate-700 dark:text-slate-300">Preview</p>
                   {activeTab === "videos" ? (
                     form.thumbnailUrl ? (
                       <img src={form.thumbnailUrl} alt="Thumbnail preview" className="h-48 w-full rounded-xl object-cover" />
                     ) : form.mediaUrl ? (
                       <video src={form.mediaUrl} controls className="h-48 w-full rounded-xl object-cover" />
                     ) : (
-                      <div className="flex h-48 items-center justify-center rounded-xl bg-slate-100 text-slate-400">No preview yet</div>
+                      <div className="flex h-48 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500">No preview yet</div>
                     )
                   ) : form.mediaUrl ? (
                     <img src={form.mediaUrl} alt="Preview" className="h-48 w-full rounded-xl object-cover" />
                   ) : (
-                    <div className="flex h-48 items-center justify-center rounded-xl bg-slate-100 text-slate-400">No preview yet</div>
+                    <div className="flex h-48 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500">No preview yet</div>
                   )}
                 </div>
 
-                <div className="rounded-xl border p-4 text-sm text-slate-600">
-                  <p className="font-medium text-slate-800">How this works</p>
+                <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600 dark:border-white/10 dark:text-slate-400">
+                  <p className="font-medium text-slate-800 dark:text-white">How this works</p>
                   <ul className="mt-3 space-y-2">
                     <li>Media added here appears on the public gallery pages.</li>
                     <li>Page titles and section text are edited from Pages.</li>
@@ -422,8 +422,8 @@ export default function GalleryManagement() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 border-t px-6 py-4">
-              <button onClick={closeEditor} className="rounded-lg border px-4 py-2 text-slate-700 hover:bg-slate-50">Cancel</button>
+            <div className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-white/10">
+              <button onClick={closeEditor} className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">Cancel</button>
               <button
                 onClick={saveItem}
                 disabled={saving}

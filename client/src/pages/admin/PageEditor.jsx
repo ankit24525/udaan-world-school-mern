@@ -1108,7 +1108,7 @@ export default function PageEditor() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
         <div className="mx-auto max-w-6xl space-y-6">
           <div className="shadow-shimmer-card p-6">
             <div className="space-y-4">
@@ -1143,19 +1143,19 @@ export default function PageEditor() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-6xl rounded-2xl border bg-white p-6 shadow">
+    <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
+      <div className="mx-auto max-w-6xl rounded-2xl border border-slate-200 bg-white p-6 shadow dark:border-white/10 dark:bg-slate-950 dark:shadow-black/30">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Edit {sectionConfig?.title || key}
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
               Edit text, media, cards, galleries, and call-to-action sections for this page.
             </p>
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-gray-600">
+          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-300">
             <input
               type="checkbox"
               checked={content.published}
@@ -1189,9 +1189,9 @@ export default function PageEditor() {
             className="h-36 w-full rounded-lg border px-4 py-3"
           />
 
-          <div className="rounded-xl border p-4">
+          <div className="rounded-xl border border-slate-200 p-4 dark:border-white/10 dark:bg-white/5">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="font-semibold">Hero Image</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white">Hero Image</h3>
               <UploadButton
                 label="Upload Hero Image"
                 accept="image/*"
@@ -1210,7 +1210,7 @@ export default function PageEditor() {
                 className="h-52 rounded-lg object-cover"
               />
             ) : (
-              <div className="rounded-lg border border-dashed p-6 text-sm text-gray-500">
+              <div className="rounded-lg border border-dashed border-slate-300 p-6 text-sm text-gray-500 dark:border-white/10 dark:text-slate-400">
                 No hero image uploaded
               </div>
             )}
@@ -1374,7 +1374,7 @@ export default function PageEditor() {
 
           <button
             onClick={() => navigate("/admin/content")}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
           >
             Cancel
           </button>
@@ -1386,7 +1386,7 @@ export default function PageEditor() {
 
 function UploadButton({ label, accept, onFile }) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5">
       <Upload size={16} />
       {label}
       <input
@@ -1420,11 +1420,11 @@ function SectionBuilder({
   const addableSectionTypes = getAddableSectionTypes(pageKey);
 
   return (
-    <div className="rounded-2xl border p-5">
+    <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10 dark:bg-white/5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-gray-900">Page Sections</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="font-semibold text-gray-900 dark:text-white">Page Sections</h3>
+          <p className="text-sm text-gray-500 dark:text-slate-400">
             Build the page like the reference UI with separate content blocks.
           </p>
         </div>
@@ -1436,7 +1436,7 @@ function SectionBuilder({
                 key={type}
                 type="button"
                 onClick={() => onAddSection(type)}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
               >
                 <Plus size={14} className="mr-1 inline" />
                 {label}
@@ -1444,7 +1444,7 @@ function SectionBuilder({
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed px-4 py-3 text-sm text-gray-500">
+          <div className="rounded-lg border border-dashed border-slate-300 px-4 py-3 text-sm text-gray-500 dark:border-white/10 dark:text-slate-400">
             This page uses a fixed events layout. Edit the existing sections below.
           </div>
         )}
@@ -1452,13 +1452,13 @@ function SectionBuilder({
 
       <div className="mt-5 space-y-5">
         {sections.map((section, index) => (
-          <div key={section.id} className="rounded-2xl border bg-gray-50 p-4">
+          <div key={section.id} className="rounded-2xl border border-slate-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-[#C3292D]">
                   {getAdminSectionLabel(pageKey, section)}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-slate-400">
                   Type: {section.type}
                 </p>
                 {lockedSectionIds.includes(section.id) ? (
@@ -1476,7 +1476,7 @@ function SectionBuilder({
                 type="button"
                 onClick={() => onRemoveSection(section.id)}
                 disabled={lockedSectionIds.includes(section.id)}
-                className="rounded p-2 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="rounded p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <Trash2 size={16} />
               </button>
@@ -1484,7 +1484,7 @@ function SectionBuilder({
 
             <div className="space-y-3">
               {immutableSectionIds.includes(section.id) ? (
-                <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:border-cyan-500/20 dark:bg-cyan-500/10 dark:text-cyan-300">
                   This section is locked to keep the exact founders design you selected.
                 </div>
               ) : null}

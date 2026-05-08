@@ -327,11 +327,11 @@ export default function ContentManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Content Management</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Content Management</h1>
+          <p className="mt-2 text-gray-600 dark:text-slate-400">
             Manage website pages, blogs, and events
           </p>
         </div>
@@ -347,8 +347,8 @@ export default function ContentManagement() {
         ) : null}
       </div>
 
-      <div className="rounded-xl border bg-white shadow">
-        <div className="flex gap-6 border-b px-6 pt-4">
+      <div className="rounded-xl border border-slate-200 bg-white shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
+        <div className="flex gap-6 border-b border-slate-200 px-6 pt-4 dark:border-white/10">
           {Object.entries(tabConfig).map(([key, tab]) => {
             const Icon = tab.icon;
 
@@ -359,7 +359,7 @@ export default function ContentManagement() {
                 className={`flex items-center gap-2 border-b-2 pb-4 transition ${
                   activeTab === key
                     ? "border-[#C3292D] font-medium text-[#C3292D]"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    : "border-transparent text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
                 <Icon size={16} />
@@ -383,7 +383,7 @@ export default function ContentManagement() {
               ))}
             </div>
           )}
-          {!loading && error && <div className="text-sm text-red-600">{error}</div>}
+          {!loading && error && <div className="text-sm text-red-600 dark:text-red-300">{error}</div>}
 
           {!loading && !error && (
             activeTab === "pages" ? (
@@ -409,13 +409,13 @@ export default function ContentManagement() {
 
       {isEditorOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b p-6">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-950 dark:shadow-black/40">
+            <div className="flex items-center justify-between border-b border-slate-200 p-6 dark:border-white/10">
               <div>
                 <h2 className="text-xl font-semibold">
                   {editingItem ? `Edit ${activeTab.slice(0, -1)}` : `Create ${activeTab.slice(0, -1)}`}
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                   {activeTab === "blogs"
                     ? "Manage blog content from the admin panel."
                     : "Manage event details from the admin panel."}
@@ -424,7 +424,7 @@ export default function ContentManagement() {
 
               <button
                 onClick={closeEditor}
-                className="rounded p-2 text-gray-500 hover:bg-gray-100"
+                className="rounded p-2 text-gray-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-white/10"
               >
                 <X size={18} />
               </button>
@@ -458,13 +458,13 @@ export default function ContentManagement() {
                   className="w-full rounded-lg border px-4 py-3"
                 />
               ) : (
-                <div className="rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-600">
-                  Event URL: <span className="font-medium text-gray-900">/events/{form.slug || "event-slug"}</span>
+                  <div className="rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm text-gray-600 dark:border-white/10 dark:text-slate-400">
+                  Event URL: <span className="font-medium text-gray-900 dark:text-white">/events/{form.slug || "event-slug"}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5">
                   <Upload size={16} />
                   {activeTab === "events" ? "Upload Event Cover Image" : "Upload to Cloudinary"}
                   <input
@@ -476,7 +476,7 @@ export default function ContentManagement() {
                 </label>
 
                 {form.mediaUrl ? (
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-600">
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
                     {activeTab === "events" ? "Cover image ready" : "Uploaded media ready"}
                   </div>
                 ) : null}
@@ -500,19 +500,19 @@ export default function ContentManagement() {
                     />
                   </div>
 
-                  <div className="space-y-3 rounded-xl border border-gray-200 p-4">
+                  <div className="space-y-3 rounded-xl border border-gray-200 p-4 dark:border-white/10">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium text-gray-900">Event Gallery</h3>
-                        <p className="text-sm text-gray-500">
+                        <h3 className="font-medium text-gray-900 dark:text-white">Event Gallery</h3>
+                        <p className="text-sm text-gray-500 dark:text-slate-400">
                           Add up to {MAX_EVENT_GALLERY_IMAGES} gallery images here. These exact images will appear in the public Event Gallery section.
                         </p>
                       </div>
                       <label
                         className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm ${
                           (form.gallery || []).length >= MAX_EVENT_GALLERY_IMAGES
-                            ? "cursor-not-allowed border-gray-200 text-gray-400"
-                            : "cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-50"
+                            ? "cursor-not-allowed border-gray-200 text-gray-400 dark:border-white/10 dark:text-slate-500"
+                            : "cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
                         }`}
                       >
                         <Upload size={16} />
@@ -529,21 +529,21 @@ export default function ContentManagement() {
                       </label>
                     </div>
 
-                    <div className="text-sm font-medium text-gray-600">
+                    <div className="text-sm font-medium text-gray-600 dark:text-slate-400">
                       {(form.gallery || []).length}/{MAX_EVENT_GALLERY_IMAGES} images added
                     </div>
 
                     {(form.gallery || []).length ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {form.gallery.map((url, index) => (
-                          <div key={`${url}-${index}`} className="overflow-hidden rounded-xl border bg-gray-50">
+                          <div key={`${url}-${index}`} className="overflow-hidden rounded-xl border bg-gray-50 dark:border-white/10 dark:bg-white/5">
                             <img
                               src={url}
                               alt={`Gallery ${index + 1}`}
                               className="h-40 w-full object-cover"
                             />
                             <div className="flex items-center justify-between p-3">
-                              <span className="text-sm text-gray-600">Image {index + 1}</span>
+                              <span className="text-sm text-gray-600 dark:text-slate-400">Image {index + 1}</span>
                               <button
                                 type="button"
                                 onClick={() => removeGalleryImage(index)}
@@ -556,7 +556,7 @@ export default function ContentManagement() {
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500">
+                      <div className="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500 dark:border-white/10 dark:text-slate-400">
                         No gallery images added yet.
                       </div>
                     )}
@@ -578,7 +578,7 @@ export default function ContentManagement() {
                 className="h-56 w-full rounded-lg border px-4 py-3"
               />
 
-              <label className="flex items-center gap-2 text-sm text-gray-700">
+              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
                 <input
                   type="checkbox"
                   checked={form.published}
@@ -590,7 +590,7 @@ export default function ContentManagement() {
               </label>
             </div>
 
-            <div className="flex gap-3 border-t p-6">
+            <div className="flex gap-3 border-t border-slate-200 p-6 dark:border-white/10">
               <button
                 onClick={saveManagedContent}
                 disabled={saving}
@@ -601,7 +601,7 @@ export default function ContentManagement() {
 
               <button
                 onClick={closeEditor}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700"
+                className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
               >
                 Cancel
               </button>
@@ -701,7 +701,7 @@ function getPageGroupLabel(item) {
 function PagesGrid({ data, emptyText, onView, onEdit }) {
   if (!data.length) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 px-6 py-10 text-center text-sm text-gray-500">
+      <div className="rounded-xl border border-dashed border-gray-300 px-6 py-10 text-center text-sm text-gray-500 dark:border-white/10 dark:text-slate-400">
         {emptyText}
       </div>
     );
@@ -712,7 +712,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
       {data.map((item) => (
         <article
           key={item.id}
-          className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20"
         >
           <div className="relative h-44 bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-700">
             {item.previewImage ? (
@@ -738,7 +738,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
               <InfoBadge label="Status" value={item.status} compact />
             </div>
 
-            <p className="line-clamp-3 min-h-[72px] text-sm leading-6 text-gray-600">
+            <p className="line-clamp-3 min-h-[72px] text-sm leading-6 text-gray-600 dark:text-slate-400">
               {item.excerpt || "Open this page to edit hero copy, sections, cards, galleries, videos, and CTA blocks."}
             </p>
 
@@ -747,7 +747,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
                 {item.previewTags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-white/10 dark:text-slate-300"
                   >
                     {tag}
                   </span>
@@ -758,7 +758,7 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
             <div className="flex gap-3">
               <button
                 onClick={() => onView(item)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
               >
                 <Eye size={16} />
                 View Editor
@@ -780,9 +780,9 @@ function PagesGrid({ data, emptyText, onView, onEdit }) {
 
 function InfoBadge({ label, value, compact = false }) {
   return (
-    <div className="rounded-xl bg-gray-50 px-3 py-3">
-      <p className="text-[11px] uppercase tracking-wide text-gray-500">{label}</p>
-      <p className={`mt-1 font-semibold ${compact ? "text-xs" : "text-lg"} text-gray-900`}>
+    <div className="rounded-xl bg-gray-50 px-3 py-3 dark:bg-white/5">
+      <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-slate-400">{label}</p>
+      <p className={`mt-1 font-semibold ${compact ? "text-xs" : "text-lg"} text-gray-900 dark:text-white`}>
         {value}
       </p>
     </div>
@@ -792,7 +792,7 @@ function InfoBadge({ label, value, compact = false }) {
 function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
   if (!data.length) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 px-6 py-10 text-center text-sm text-gray-500">
+      <div className="rounded-xl border border-dashed border-gray-300 px-6 py-10 text-center text-sm text-gray-500 dark:border-white/10 dark:text-slate-400">
         {emptyText}
       </div>
     );
@@ -801,7 +801,7 @@ function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className="border-b bg-gray-50 text-left text-xs uppercase text-gray-500">
+        <thead className="border-b bg-gray-50 text-left text-xs uppercase text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
           <tr>
             <th className="px-6 py-3">ID</th>
             <th className="px-6 py-3">Title</th>
@@ -820,7 +820,7 @@ function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
             const updatedAt = item.updatedAt || item.date || item.createdAt;
 
             return (
-              <tr key={rowId} className="hover:bg-gray-50">
+              <tr key={rowId} className="hover:bg-gray-50 dark:hover:bg-white/5">
                 <td className="px-6 py-4">{item.code || item.id || rowId}</td>
                 <td className="px-6 py-4 font-medium">{item.title}</td>
                 <td className="px-6 py-4">
@@ -829,7 +829,7 @@ function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
                   ) : tab === "events" ? (
                     <div className="space-y-1">
                       <div>{item.type || "Event"}</div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-slate-400">
                         Gallery: {Array.isArray(item.meta?.gallery) ? item.meta.gallery.length : 0}
                       </div>
                     </div>
@@ -848,14 +848,14 @@ function Table({ tab, data, emptyText, onView, onEdit, onDelete }) {
                     {status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-gray-600">
+                <td className="px-6 py-4 text-gray-600 dark:text-slate-400">
                   {updatedAt ? new Date(updatedAt).toLocaleDateString() : "N/A"}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex gap-2">
                     <button
                       onClick={() => onView(item)}
-                      className="rounded p-1 text-blue-600 hover:bg-blue-50"
+                      className="rounded p-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10"
                     >
                       <Eye size={16} />
                     </button>

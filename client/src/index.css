@@ -19,6 +19,79 @@ body {
   background: #f3f4f6; /* dashboard bg */
 }
 
+.dark .admin-theme {
+  color: #e2e8f0;
+}
+
+.dark .admin-theme .bg-white {
+  background-color: rgba(15, 23, 42, 0.88) !important;
+}
+
+.dark .admin-theme .bg-gray-50,
+.dark .admin-theme .bg-slate-50 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .admin-theme .border,
+.dark .admin-theme .border-b,
+.dark .admin-theme .border-t,
+.dark .admin-theme .border-gray-200,
+.dark .admin-theme .border-gray-300,
+.dark .admin-theme .border-slate-200 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .admin-theme .text-gray-900,
+.dark .admin-theme .text-slate-900 {
+  color: #ffffff !important;
+}
+
+.dark .admin-theme .text-gray-800,
+.dark .admin-theme .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+.dark .admin-theme .text-gray-700,
+.dark .admin-theme .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .admin-theme .text-gray-600,
+.dark .admin-theme .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .admin-theme .text-gray-500,
+.dark .admin-theme .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.dark .admin-theme .text-gray-400,
+.dark .admin-theme .text-slate-400 {
+  color: #64748b !important;
+}
+
+.dark .admin-theme input,
+.dark .admin-theme textarea,
+.dark .admin-theme select {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+.dark .admin-theme input::placeholder,
+.dark .admin-theme textarea::placeholder {
+  color: #94a3b8;
+}
+
+.dark .admin-theme table thead {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .admin-theme table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
 @keyframes shadow-shimmer {
   0% {
     transform: translateX(-100%);

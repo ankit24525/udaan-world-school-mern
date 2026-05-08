@@ -329,10 +329,10 @@ export default function StaffManagement() {
   const tabLabelClass = (value) => `pb-4 flex items-center gap-2 border-b-2 ${tab === value ? "border-[#C3292D] text-[#C3292D]" : "border-transparent text-gray-600"}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 dark:bg-[#0b1120]">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Staff & Careers</h1>
-        <p className="mt-2 text-gray-600">Manage manual staff profiles, live job openings and teacher applications from one place.</p>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Staff & Careers</h1>
+        <p className="mt-2 text-gray-600 dark:text-slate-400">Manage manual staff profiles, live job openings and teacher applications from one place.</p>
       </div>
 
       <div className="mb-6 grid gap-4 md:grid-cols-4">
@@ -342,8 +342,8 @@ export default function StaffManagement() {
         <SummaryCard label="Pending Applications" value={pendingApplications.length} />
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white shadow">
-        <div className="flex gap-6 border-b px-6 pt-4">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
+        <div className="flex gap-6 border-b border-slate-200 px-6 pt-4 dark:border-white/10">
           <button onClick={() => setTab("staff")} className={tabLabelClass("staff")}>
             <Users size={16} /> Staff Members
           </button>
@@ -355,11 +355,11 @@ export default function StaffManagement() {
           </button>
         </div>
 
-        <div className="border-b p-6">
+        <div className="border-b border-slate-200 p-6 dark:border-white/10">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="relative w-full max-w-xl">
-              <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search staff, jobs or applicants..." className="w-full rounded-lg border py-2 pl-10 pr-4" />
+              <Search className="absolute left-3 top-2.5 text-gray-400 dark:text-slate-500" size={18} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search staff, jobs or applicants..." className="w-full rounded-lg border border-slate-300 py-2 pl-10 pr-4 text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400" />
             </div>
 
             {tab === "openings" ? (
@@ -379,7 +379,7 @@ export default function StaffManagement() {
         <div className="overflow-x-auto">
           {tab === "staff" ? (
             <table className="w-full">
-              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500">
+              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500 dark:bg-white/5 dark:text-slate-400">
                 <tr>
                   <th className="px-6 py-3">Name</th>
                   <th className="px-6 py-3">Role</th>
@@ -391,14 +391,14 @@ export default function StaffManagement() {
               </thead>
               <tbody className="divide-y">
                 {filteredStaff.map((staff) => (
-                  <tr key={staff._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-slate-900">{staff.title}</td>
+                  <tr key={staff._id} className="hover:bg-gray-50 dark:hover:bg-white/5">
+                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{staff.title}</td>
                     <td className="px-6 py-4">{staff.meta?.role || "Teacher"}</td>
                     <td className="px-6 py-4">{staff.meta?.department || "Academics"}</td>
                     <td className="px-6 py-4">{staff.meta?.qualification || "-"}</td>
                     <td className="px-6 py-4 text-sm">
                       <div>{staff.meta?.phone || "-"}</div>
-                      <div className="text-slate-500">{staff.meta?.email || "-"}</div>
+                      <div className="text-slate-500 dark:text-slate-400">{staff.meta?.email || "-"}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
@@ -415,7 +415,7 @@ export default function StaffManagement() {
 
           {tab === "openings" ? (
             <table className="w-full">
-              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500">
+              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500 dark:bg-white/5 dark:text-slate-400">
                 <tr>
                   <th className="px-6 py-3">Job Title</th>
                   <th className="px-6 py-3">Department</th>
@@ -427,8 +427,8 @@ export default function StaffManagement() {
               </thead>
               <tbody className="divide-y">
                 {filteredJobs.map((job) => (
-                  <tr key={job._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4"><div className="font-medium text-slate-900">{job.title}</div><div className="text-sm text-slate-500">{job.excerpt}</div></td>
+                  <tr key={job._id} className="hover:bg-gray-50 dark:hover:bg-white/5">
+                    <td className="px-6 py-4"><div className="font-medium text-slate-900 dark:text-white">{job.title}</div><div className="text-sm text-slate-500 dark:text-slate-400">{job.excerpt}</div></td>
                     <td className="px-6 py-4">{job.category || "Academics"}</td>
                     <td className="px-6 py-4">{job.location || "Baheri Campus"}</td>
                     <td className="px-6 py-4">{job.meta?.employmentType || "Full Time"}</td>
@@ -442,7 +442,7 @@ export default function StaffManagement() {
 
           {tab === "applications" ? (
             <table className="w-full">
-              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500">
+              <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500 dark:bg-white/5 dark:text-slate-400">
                 <tr>
                   <th className="px-6 py-3">Application ID</th>
                   <th className="px-6 py-3">Applicant</th>
@@ -455,9 +455,9 @@ export default function StaffManagement() {
               </thead>
               <tbody className="divide-y">
                 {filteredApplications.map((application) => (
-                  <tr key={application._id} className="hover:bg-gray-50">
+                  <tr key={application._id} className="hover:bg-gray-50 dark:hover:bg-white/5">
                     <td className="px-6 py-4 font-medium">{application.applicationId}</td>
-                    <td className="px-6 py-4"><div className="font-medium text-slate-900">{application.fullName || application.studentName}</div><div className="text-sm text-slate-500">{application.email} · {application.phone}</div></td>
+                    <td className="px-6 py-4"><div className="font-medium text-slate-900 dark:text-white">{application.fullName || application.studentName}</div><div className="text-sm text-slate-500 dark:text-slate-400">{application.email} · {application.phone}</div></td>
                     <td className="px-6 py-4">{application.appliedRole || "Teacher"}</td>
                     <td className="px-6 py-4">{application.qualification || "-"}</td>
                     <td className="px-6 py-4">{application.resumeUrl ? <a href={application.resumeUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">View Resume</a> : <span className="text-slate-400">No file</span>}</td>
@@ -473,11 +473,11 @@ export default function StaffManagement() {
 
       {staffEditorOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl dark:bg-slate-950 dark:shadow-black/40">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/10">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">{editingStaff ? "Edit Staff Member" : "Add Staff Member"}</h2>
-                <p className="text-sm text-slate-500">Create a real staff profile that can open like a student profile.</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingStaff ? "Edit Staff Member" : "Add Staff Member"}</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Create a real staff profile that can open like a student profile.</p>
               </div>
               <button onClick={closeStaffEditor} className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
             </div>
@@ -497,11 +497,11 @@ export default function StaffManagement() {
               </label>
               <textarea value={staffForm.excerpt} onChange={(e) => setStaffForm((prev) => ({ ...prev, excerpt: e.target.value }))} placeholder="Short intro" className="h-24 rounded-lg border px-4 py-3 md:col-span-2" />
               <textarea value={staffForm.body} onChange={(e) => setStaffForm((prev) => ({ ...prev, body: e.target.value }))} placeholder="Detailed profile" className="h-32 rounded-lg border px-4 py-3 md:col-span-2" />
-              <div className="md:col-span-2 rounded-lg border p-4">
+                <div className="md:col-span-2 rounded-lg border border-slate-200 p-4 dark:border-white/10">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="font-medium text-slate-900">Profile Image</p>
-                    <p className="text-sm text-slate-500">Upload a teacher photo for admin and public pages.</p>
+                    <p className="font-medium text-slate-900 dark:text-white">Profile Image</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Upload a teacher photo for admin and public pages.</p>
                   </div>
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#C3292D] px-4 py-2 text-sm font-medium text-white">
                     <Upload size={14} /> Upload
@@ -511,8 +511,8 @@ export default function StaffManagement() {
                 {staffForm.imageUrl ? <img src={staffForm.imageUrl} alt="staff" className="mt-4 h-48 w-full rounded-2xl object-cover" /> : null}
               </div>
             </div>
-            <div className="flex justify-end gap-3 border-t px-6 py-4">
-              <button onClick={closeStaffEditor} className="rounded-lg border px-4 py-2 text-slate-700">Cancel</button>
+            <div className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-white/10">
+              <button onClick={closeStaffEditor} className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">Cancel</button>
               <button onClick={saveStaff} disabled={savingStaff} className="rounded-lg bg-[#C3292D] px-4 py-2 text-white disabled:opacity-60">{savingStaff ? "Saving..." : editingStaff ? "Save Changes" : "Create Staff Member"}</button>
             </div>
           </div>
@@ -521,11 +521,11 @@ export default function StaffManagement() {
 
       {jobEditorOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-950 dark:shadow-black/40">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/10">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">{editingJob ? "Edit Job Opening" : "Add Job Opening"}</h2>
-                <p className="text-sm text-slate-500">This opening will appear on the public careers page.</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingJob ? "Edit Job Opening" : "Add Job Opening"}</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">This opening will appear on the public careers page.</p>
               </div>
               <button onClick={closeJobEditor} className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
             </div>
@@ -541,22 +541,22 @@ export default function StaffManagement() {
               <textarea value={jobForm.excerpt} onChange={(e) => setJobForm((prev) => ({ ...prev, excerpt: e.target.value }))} placeholder="Short description" className="h-28 rounded-lg border px-4 py-3 md:col-span-2" />
               <textarea value={jobForm.body} onChange={(e) => setJobForm((prev) => ({ ...prev, body: e.target.value }))} placeholder="Detailed job description" className="h-40 rounded-lg border px-4 py-3 md:col-span-2" />
             </div>
-            <div className="flex justify-end gap-3 border-t px-6 py-4"><button onClick={closeJobEditor} className="rounded-lg border px-4 py-2 text-slate-700">Cancel</button><button onClick={saveJob} disabled={savingJob} className="rounded-lg bg-[#C3292D] px-4 py-2 text-white disabled:opacity-60">{savingJob ? "Saving..." : editingJob ? "Save Changes" : "Create Opening"}</button></div>
+            <div className="flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-white/10"><button onClick={closeJobEditor} className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">Cancel</button><button onClick={saveJob} disabled={savingJob} className="rounded-lg bg-[#C3292D] px-4 py-2 text-white disabled:opacity-60">{savingJob ? "Saving..." : editingJob ? "Save Changes" : "Create Opening"}</button></div>
           </div>
         </div>
       ) : null}
 
       {selectedApplication ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-950 dark:shadow-black/40">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/10">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">{selectedApplication.fullName || selectedApplication.studentName}</h2>
-                <p className="text-sm text-slate-500">{selectedApplication.applicationId} · {selectedApplication.appliedRole || "Teacher"}</p>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedApplication.fullName || selectedApplication.studentName}</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{selectedApplication.applicationId} · {selectedApplication.appliedRole || "Teacher"}</p>
               </div>
               <button onClick={() => setSelectedApplication(null)} className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
             </div>
-            <div className="space-y-4 p-6 text-sm text-slate-700">
+            <div className="space-y-4 p-6 text-sm text-slate-700 dark:text-slate-300">
               <DetailRow label="Email" value={selectedApplication.email} />
               <DetailRow label="Phone" value={selectedApplication.phone} />
               <DetailRow label="Qualification" value={selectedApplication.qualification} />
@@ -565,7 +565,7 @@ export default function StaffManagement() {
               <DetailRow label="Cover Letter" value={selectedApplication.coverLetter || selectedApplication.message} multiline />
               <DetailRow label="Resume" value={selectedApplication.resumeUrl} link />
             </div>
-            <div className="flex justify-between gap-3 border-t px-6 py-4"><button onClick={() => deleteApplication(selectedApplication._id)} className="rounded-lg border border-red-200 px-4 py-2 text-red-600">Delete</button><div className="flex gap-3"><button onClick={() => updateApplicationStatus(selectedApplication._id, "shortlisted")} className="rounded-lg border px-4 py-2 text-slate-700">Shortlist</button><button onClick={() => updateApplicationStatus(selectedApplication._id, "hired")} className="rounded-lg bg-[#C3292D] px-4 py-2 text-white">Move To Staff</button></div></div>
+            <div className="flex justify-between gap-3 border-t border-slate-200 px-6 py-4 dark:border-white/10"><button onClick={() => deleteApplication(selectedApplication._id)} className="rounded-lg border border-red-200 px-4 py-2 text-red-600">Delete</button><div className="flex gap-3"><button onClick={() => updateApplicationStatus(selectedApplication._id, "shortlisted")} className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">Shortlist</button><button onClick={() => updateApplicationStatus(selectedApplication._id, "hired")} className="rounded-lg bg-[#C3292D] px-4 py-2 text-white">Move To Staff</button></div></div>
           </div>
         </div>
       ) : null}
@@ -574,14 +574,14 @@ export default function StaffManagement() {
 }
 
 function SummaryCard({ label, value }) {
-  return <div className="rounded-xl border bg-white p-6 shadow"><h2 className="text-3xl font-bold">{value}</h2><p className="text-gray-600">{label}</p></div>;
+  return <div className="rounded-xl border border-slate-200 bg-white p-6 shadow dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20"><h2 className="text-3xl font-bold text-slate-900 dark:text-white">{value}</h2><p className="text-gray-600 dark:text-slate-400">{label}</p></div>;
 }
 
 function DetailRow({ label, value, multiline = false, link = false }) {
   return (
-    <div className="rounded-xl border p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      {link && value ? <a href={value} target="_blank" rel="noreferrer" className="mt-2 inline-flex text-blue-600 hover:underline">View File</a> : multiline ? <p className="mt-2 whitespace-pre-line text-slate-800">{value || "-"}</p> : <p className="mt-2 text-slate-800">{value || "-"}</p>}
+    <div className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      {link && value ? <a href={value} target="_blank" rel="noreferrer" className="mt-2 inline-flex text-blue-600 hover:underline">View File</a> : multiline ? <p className="mt-2 whitespace-pre-line text-slate-800 dark:text-slate-100">{value || "-"}</p> : <p className="mt-2 text-slate-800 dark:text-slate-100">{value || "-"}</p>}
     </div>
   );
 }

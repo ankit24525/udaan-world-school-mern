@@ -154,10 +154,10 @@ export default function Settings() {
   }
 
   return (
-    <div className="w-full p-8">
+    <div className="min-h-screen w-full bg-gray-50 p-8 dark:bg-[#0b1120]">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-2 text-gray-600">Manage school information, public contact details, social links and admin security.</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+        <p className="mt-2 text-gray-600 dark:text-slate-400">Manage school information, public contact details, social links and admin security.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -179,7 +179,7 @@ export default function Settings() {
               <Input value={settings.meta.contact.phone2} onChange={(v) => updateGroup("contact", "phone2", v)} placeholder="Phone 2" />
             </div>
             <Input value={settings.meta.contact.email} onChange={(v) => updateGroup("contact", "email", v)} placeholder="School Email" />
-            <p className="text-sm text-gray-500">This school email is used in the public footer and contact details.</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">This school email is used in the public footer and contact details.</p>
             <Input value={settings.meta.contact.website} onChange={(v) => updateGroup("contact", "website", v)} placeholder="Website" />
           </Card>
 
@@ -187,7 +187,7 @@ export default function Settings() {
             <Input value={settings.meta.social.facebook} onChange={(v) => updateGroup("social", "facebook", v)} placeholder="Facebook URL" />
             <Input value={settings.meta.social.instagram} onChange={(v) => updateGroup("social", "instagram", v)} placeholder="Instagram URL" />
             <Input value={settings.meta.social.youtube} onChange={(v) => updateGroup("social", "youtube", v)} placeholder="YouTube URL" />
-            <p className="text-sm text-gray-500">These links are used in the website navbar, footer and social strip.</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">These links are used in the website navbar, footer and social strip.</p>
           </Card>
         </div>
 
@@ -195,7 +195,7 @@ export default function Settings() {
           <Card title="Admin Profile" icon={User}>
             <Input value={admin?.name || ""} onChange={() => {}} placeholder="Name" disabled />
             <Input value={admin?.email || ""} onChange={() => {}} placeholder="Email" disabled />
-            <p className="text-sm text-gray-500">Admin identity is loaded from the active login session.</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Admin identity is loaded from the active login session.</p>
           </Card>
 
           <Card title="Notifications" icon={Bell}>
@@ -206,7 +206,7 @@ export default function Settings() {
           <Card title="Security" icon={Shield}>
             <ToggleRow label="Two-Factor Preference" checked={Boolean(settings.meta.security.twoFactorEnabled)} onChange={(checked) => updateGroup("security", "twoFactorEnabled", checked)} />
             <div className="space-y-3 border-t pt-4">
-              <p className="text-sm font-semibold text-gray-900">Reset Admin Password</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">Reset Admin Password</p>
               <PasswordInput
                 value={passwordForm.currentPassword}
                 onChange={(v) => setPasswordForm((prev) => ({ ...prev, currentPassword: v }))}
@@ -243,7 +243,7 @@ export default function Settings() {
                   }))
                 }
               />
-              <button onClick={changePassword} disabled={changingPassword} className="w-full rounded-lg bg-slate-900 px-4 py-2 text-white disabled:opacity-60">
+              <button onClick={changePassword} disabled={changingPassword} className="w-full rounded-lg bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-800 disabled:opacity-60 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400">
                 {changingPassword ? "Updating Password..." : "Update Password"}
               </button>
               {passwordMessage ? <p className={`text-sm ${passwordMessage.toLowerCase().includes("success") || passwordMessage.toLowerCase().includes("updated") ? "text-green-600" : "text-red-600"}`}>{passwordMessage}</p> : null}
@@ -255,7 +255,7 @@ export default function Settings() {
       <div className="mt-6 flex items-center justify-between gap-4">
         <p className={`text-sm ${message.includes("Unable") ? "text-red-600" : "text-green-600"}`}>{message}</p>
         <div className="flex gap-4">
-          <button onClick={fetchSettings} className="rounded-lg border px-6 py-3">Reset</button>
+          <button onClick={fetchSettings} className="rounded-lg border border-slate-300 px-6 py-3 text-slate-700 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5">Reset</button>
           <button onClick={saveSettings} disabled={saving} className="rounded-lg bg-[#C3292D] px-6 py-3 text-white disabled:opacity-60">
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -267,9 +267,9 @@ export default function Settings() {
 
 function Card({ title, icon: Icon, children }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="border-b border-gray-200 p-6">
-        <h2 className="flex items-center gap-2 font-semibold text-gray-900">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-900/80 dark:shadow-black/20">
+      <div className="border-b border-gray-200 p-6 dark:border-white/10">
+        <h2 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
           <Icon className="h-5 w-5 text-[#C3292D]" />
           {title}
         </h2>
@@ -280,7 +280,7 @@ function Card({ title, icon: Icon, children }) {
 }
 
 function Input({ value, onChange, placeholder, disabled = false, type = "text" }) {
-  return <input type={type} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-full rounded-lg border border-gray-300 px-4 py-2 disabled:bg-gray-100" placeholder={placeholder} />;
+  return <input type={type} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 disabled:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400 dark:disabled:bg-white/5" placeholder={placeholder} />;
 }
 
 function PasswordInput({ value, onChange, placeholder, visible, onToggle }) {
@@ -290,13 +290,13 @@ function PasswordInput({ value, onChange, placeholder, visible, onToggle }) {
         type={visible ? "text" : "password"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12"
+        className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12 text-gray-900 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400"
         placeholder={placeholder}
       />
       <button
         type="button"
         onClick={onToggle}
-        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-500 transition hover:text-gray-700"
+        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-500 transition hover:text-gray-700 dark:text-slate-400 dark:hover:text-white"
         aria-label={visible ? "Hide password" : "Show password"}
       >
         {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -306,12 +306,12 @@ function PasswordInput({ value, onChange, placeholder, visible, onToggle }) {
 }
 
 function TextArea({ value, onChange, placeholder, rows = 4 }) {
-  return <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} className="w-full rounded-lg border border-gray-300 px-4 py-2" placeholder={placeholder} />;
+  return <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-900 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-400" placeholder={placeholder} />;
 }
 
 function ToggleRow({ label, checked, onChange }) {
   return (
-    <label className="flex justify-between gap-4 text-sm text-gray-700">
+    <label className="flex justify-between gap-4 text-sm text-gray-700 dark:text-slate-300">
       <span>{label}</span>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </label>
