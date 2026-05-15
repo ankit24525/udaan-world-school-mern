@@ -6,6 +6,7 @@ export default function AdmissionsManagement() {
   const [activeTab, setActiveTab] = useState("enquiries");
   const [search, setSearch] = useState("");
   const [enquiries, setEnquiries] = useState([]);
+  const [selectedApplication, setSelectedApplication] = useState(null);
   const [editFees, setEditFees] = useState(false);
   const [fees, setFees] = useState({
     nursery: "1180",
@@ -41,6 +42,27 @@ export default function AdmissionsManagement() {
   async function updateStatus(id, status) {
     await api.patch(`/enquiries/${id}/status`, { status });
     fetchEnquiries();
+    if (selectedApplication?._id === id) {
+      setSelectedApplication((prev) => (prev ? { ...prev, status } : prev));
+    }
+  }
+
+  async function scheduleTest(application) {
+    const currentValue = application?.testDate || "";
+    const testDate = window.prompt("Enter test date", currentValue);
+    if (!testDate) return;
+
+    await api.patch(`/enquiries/${application._id}/status`, {
+      status: "test_scheduled",
+      testDate,
+    });
+
+    fetchEnquiries();
+    if (selectedApplication?._id === application._id) {
+      setSelectedApplication((prev) =>
+        prev ? { ...prev, status: "test_scheduled", testDate } : prev
+      );
+    }
   }
 
   const applications = useMemo(
@@ -246,7 +268,19 @@ export default function AdmissionsManagement() {
                       </span>
                     </td>
                     <td className="flex gap-2 px-6 py-4">
-                      <button className="p-1 text-blue-600">View</button>
+                      <button
+                        onClick={() => setSelectedApplication(e)}
+                        className="p-1 text-blue-600 hover:underline"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => scheduleTest(e)}
+                        className="p-1 text-sky-600"
+                        title="Schedule Test"
+                      >
+                        <Clock size={16} />
+                      </button>
                       <button
                         onClick={() => updateStatus(e._id, "approved")}
                         className="p-1 text-green-600"
@@ -365,6 +399,62 @@ export default function AdmissionsManagement() {
           )}
         </div>
       </div>
+
+      {selectedApplication ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b px-6 py-4">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">
+                  {selectedApplication.studentName || "Admission Application"}
+                </h2>
+                <p className="text-sm text-slate-500">
+                  {selectedApplication.applicationId || "Application"} ·{" "}
+                  {selectedApplication.className || "Class not set"}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedApplication(null)}
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-100"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="grid gap-4 p-6 md:grid-cols-2">
+              <DetailCard label="Student Name" value={selectedApplication.studentName} />
+              <DetailCard label="Parent Name" value={selectedApplication.parentName} />
+              <DetailCard label="Class" value={selectedApplication.className} />
+              <DetailCard label="Phone" value={selectedApplication.phone} />
+              <DetailCard label="Email" value={selectedApplication.email} />
+              <DetailCard label="Submitted" value={selectedApplication.createdAt ? new Date(selectedApplication.createdAt).toLocaleDateString() : "-"} />
+              <DetailCard label="Status" value={(selectedApplication.status || "-").replace("_", " ")} />
+              <DetailCard label="Test Date" value={selectedApplication.testDate || "Not Set"} />
+            </div>
+
+            <div className="flex flex-wrap justify-end gap-3 border-t px-6 py-4">
+              <button
+                onClick={() => scheduleTest(selectedApplication)}
+                className="rounded-lg border border-sky-200 px-4 py-2 text-sky-700 hover:bg-sky-50"
+              >
+                Schedule Test
+              </button>
+              <button
+                onClick={() => updateStatus(selectedApplication._id, "contacted")}
+                className="rounded-lg border border-emerald-200 px-4 py-2 text-emerald-700 hover:bg-emerald-50"
+              >
+                Mark Contacted
+              </button>
+              <button
+                onClick={() => updateStatus(selectedApplication._id, "approved")}
+                className="rounded-lg bg-[#C3292D] px-4 py-2 text-white hover:bg-[#A01F23]"
+              >
+                Approve Application
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -396,6 +486,17 @@ function FeeRow({ label, name, value, editFees, setFees, suffix = "/month" }) {
           {suffix}
         </span>
       )}
+    </div>
+  );
+}
+
+function DetailCard({ label, value }) {
+  return (
+    <div className="rounded-xl border border-slate-200 p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        {label}
+      </p>
+      <p className="mt-2 text-sm font-medium text-slate-900">{value || "-"}</p>
     </div>
   );
 }
