@@ -2,6 +2,7 @@ import { ArrowLeft, CalendarDays, Film } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 function hasHtml(content = "") {
   return /<[^>]+>/.test(content);
@@ -81,6 +82,7 @@ export default function BlogDetail() {
     }
 
     fetchData();
+    return attachLiveRefresh(fetchData);
   }, [id]);
 
   const articleBody = useMemo(() => {

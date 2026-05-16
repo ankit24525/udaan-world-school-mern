@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useManagedSection from "../hooks/useManagedSection.js";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 const aboutLinks = [
   ["About Us", "/about-us"],
@@ -61,6 +62,7 @@ export default function Footer() {
     }
 
     fetchSettings();
+    return attachLiveRefresh(fetchSettings);
   }, []);
 
   const socialLinks = useMemo(

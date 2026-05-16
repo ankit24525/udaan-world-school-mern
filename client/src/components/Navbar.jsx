@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { images, navItems } from "../data/siteData.js";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 const defaultNotice =
   "Admissions Open 2026 • Limited Seats Available • Smart Classes • Apply Now";
@@ -78,6 +79,7 @@ export default function Navbar() {
     }
 
     fetchSettings();
+    return attachLiveRefresh(fetchSettings);
   }, []);
 
   const socialLinks = useMemo(

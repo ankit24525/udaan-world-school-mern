@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import { pageContent } from "./pageContent.js";
 import { pickImage, splitLines, splitParagraphs } from "../utils/publicContent.js";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 const fallbackPage = pageContent.careers;
 
@@ -85,9 +86,11 @@ export default function CareersPage() {
     }
 
     fetchData();
+    const cleanup = attachLiveRefresh(fetchData);
 
     return () => {
       mounted = false;
+      cleanup();
     };
   }, []);
 

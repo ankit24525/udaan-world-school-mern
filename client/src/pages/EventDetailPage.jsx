@@ -3,6 +3,7 @@ import { ArrowLeft, CalendarDays, MapPin } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import api from "../services/api";
 import { splitParagraphs } from "../utils/publicContent.js";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 export default function EventDetailPage() {
   const { slug } = useParams();
@@ -41,9 +42,11 @@ export default function EventDetailPage() {
     }
 
     fetchEvent();
+    const cleanup = attachLiveRefresh(fetchEvent);
 
     return () => {
       active = false;
+      cleanup();
     };
   }, [slug]);
 

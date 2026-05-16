@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState([]);
@@ -15,6 +16,7 @@ export default function TeachersPage() {
     }
 
     fetchTeachers();
+    return attachLiveRefresh(fetchTeachers);
   }, []);
 
   return (

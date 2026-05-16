@@ -1,4 +1,5 @@
 import axios from "axios";
+import { notifySiteUpdate } from "../utils/liveUpdates";
 
 function normalizeApiBaseUrl(value) {
   const raw = String(value || "").trim().replace(/\/+$/, "");
@@ -19,6 +20,19 @@ const api = axios.create({
   withCredentials: true,
 });
 
+function shouldNotifyPublicRefresh(config = {}) {
+  const method = String(config.method || "get").toLowerCase();
+  const url = String(config.url || "");
+
+  if (!["post", "put", "patch", "delete"].includes(method)) {
+    return false;
+  }
+
+  return [/^\/?content\b/i, /^\/?facilities\b/i, /^\/?scholarships\b/i].some((pattern) =>
+    pattern.test(url)
+  );
+}
+
 // 🔐 Add token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("adminToken");
@@ -32,7 +46,12 @@ api.interceptors.request.use((config) => {
 
 // ⚠️ Handle auth errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (shouldNotifyPublicRefresh(response.config)) {
+      notifySiteUpdate("public-content");
+    }
+    return response;
+  },
   (error) => {
     if (error?.response?.status === 401) {
       localStorage.removeItem("adminToken");

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 export default function useManagedSection(sectionKey, fallbackData) {
   const [section, setSection] = useState({ ...(fallbackData || {}), __loading: true });
@@ -36,11 +37,13 @@ export default function useManagedSection(sectionKey, fallbackData) {
     }
 
     fetchSection();
+    const cleanup = attachLiveRefresh(fetchSection);
 
     return () => {
       isMounted = false;
+      cleanup();
     };
-  }, [sectionKey]);
+  }, [sectionKey, fallbackData]);
 
   return section;
 }

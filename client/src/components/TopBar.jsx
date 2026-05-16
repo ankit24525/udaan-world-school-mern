@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../services/api";
 import { Icons } from "../data/siteData.js";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 const defaultSettings = {
   social: {
@@ -55,6 +56,7 @@ export default function TopBar() {
     }
 
     fetchSettings();
+    return attachLiveRefresh(fetchSettings);
   }, []);
 
   const socialLinks = useMemo(

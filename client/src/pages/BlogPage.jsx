@@ -2,6 +2,7 @@ import { ArrowRight, CalendarDays, Film, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 
 function plainText(content = "") {
   return content
@@ -33,6 +34,7 @@ export default function BlogsPage() {
     }
 
     fetchBlogs();
+    return attachLiveRefresh(fetchBlogs);
   }, []);
 
   const featured = blogs[0] || null;

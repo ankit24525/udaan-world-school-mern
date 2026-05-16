@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, BadgeCheck, BookOpen, CalendarDays, Camera, CircleCheck, CreditCard, Download, FileText, GraduationCap, Mail, Music, Phone, Quote, Sparkles, Trophy, User, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 import { documents } from "../data/siteData.js";
 import { pageContent } from "./pageContent.js";
 import {
@@ -456,9 +457,11 @@ export default function StandardPage({ pageKey }) {
     }
 
     fetchPage();
+    const cleanup = attachLiveRefresh(fetchPage);
 
     return () => {
       isMounted = false;
+      cleanup();
     };
   }, [fallbackPage, pageKey]);
 

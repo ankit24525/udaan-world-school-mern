@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import useManagedSection from "../hooks/useManagedSection.js";
 import api from "../services/api";
+import { attachLiveRefresh } from "../utils/liveUpdates";
 import { ensureArray } from "../utils/publicContent.js";
 
 const fallbackFacilities = {
@@ -51,6 +52,7 @@ export default function Facilities() {
     }
 
     fetchFacilities();
+    return attachLiveRefresh(fetchFacilities);
   }, []);
 
   const managedFacilities = ensureArray(section.meta?.items, fallbackFacilities.meta.items).map((item, index) =>
