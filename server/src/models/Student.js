@@ -124,15 +124,7 @@ const studentSchema = new mongoose.Schema({
   ],
 
   // DOCUMENTS
-  documents: [
-    {
-      name: String,
-      size: String,
-      date: String,
-      type: String,
-      fileUrl: String,
-    },
-  ],
+  documents: [mongoose.Schema.Types.Mixed],
 });
 
 export default mongoose.model("Student", studentSchema);

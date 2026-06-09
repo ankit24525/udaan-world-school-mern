@@ -8,6 +8,7 @@ import {
   DollarSign,
   Download,
   Edit,
+  Trash2,
   FileText,
   Heart,
   Mail,
@@ -37,12 +38,15 @@ export default function StudentProfile() {
   const documentInputRef = useRef(null);
 
   const [student, setStudent] = useState(null);
+  const [documentTypes, setDocumentTypes] = useState([]);
+  const [selectedDocumentType, setSelectedDocumentType] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingDocument, setUploadingDocument] = useState(false);
 
   useEffect(() => {
     fetchStudent();
+    fetchDocumentTypes();
   }, [id]);
 
   async function fetchStudent() {
@@ -54,11 +58,25 @@ export default function StudentProfile() {
     }
   }
 
+  async function fetchDocumentTypes() {
+    try {
+      const res = await api.get("/document-requests/types", { params: { all: true } });
+      const types = Array.isArray(res.data) ? res.data : [];
+      setDocumentTypes(types);
+      setSelectedDocumentType((current) => current || types[0]?.name || "");
+    } catch (err) {
+      console.error(err);
+      setDocumentTypes([]);
+    }
+  }
+
   async function uploadAsset(file) {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await api.post("/upload", formData);
-    return res.data.url;
+    const res = await api.post("/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
   }
 
   async function updateStudent(payload, successMessage) {
@@ -74,11 +92,11 @@ export default function StudentProfile() {
 
     setUploadingPhoto(true);
     try {
-      const photo = await uploadAsset(file);
-      await updateStudent({ photo }, "Profile photo updated");
+      const uploaded = await uploadAsset(file);
+      await updateStudent({ photo: uploaded?.url || "" }, "Profile photo updated");
     } catch (error) {
       console.error(error);
-      alert("Unable to upload student photo");
+      alert(error.response?.data?.message || "Unable to upload student photo");
     } finally {
       setUploadingPhoto(false);
       event.target.value = "";
@@ -91,28 +109,47 @@ export default function StudentProfile() {
 
     setUploadingDocument(true);
     try {
-      const fileUrl = await uploadAsset(file);
-      const nextDocuments = [
-        ...(student.documents || []),
-        {
-          name: file.name,
-          size: `${Math.max(1, Math.round(file.size / 1024))} KB`,
-          date: new Date().toISOString().slice(0, 10),
-          type: file.type || "File",
-          fileUrl,
-        },
-      ];
+      if (!selectedDocumentType) {
+        alert("Please select a document option before uploading.");
+        return;
+      }
 
-      await updateStudent({ documents: nextDocuments }, "Document uploaded");
+      const uploaded = await uploadAsset(file);
+      const res = await api.post(`/students/${student._id}/documents`, {
+        name: file.name,
+        size: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+        date: new Date().toISOString().slice(0, 10),
+        type: selectedDocumentType,
+        fileUrl: uploaded?.url || "",
+        publicId: uploaded?.publicId || "",
+        resourceType: uploaded?.resourceType || "",
+        source: "Admin Upload",
+      });
+
+      setStudent(res.data);
+      alert("Document uploaded");
     } catch (error) {
       console.error(error);
-      alert("Unable to upload document");
+      alert(error.response?.data?.message || "Unable to upload document");
     } finally {
       setUploadingDocument(false);
       event.target.value = "";
     }
   }
 
+  async function removeDocument(document, index) {
+    if (!window.confirm("Remove this document from the student profile?")) return;
+
+    if (document?._id) {
+      const res = await api.delete(`/students/${student._id}/documents/${document._id}`);
+      setStudent(res.data);
+      alert("Document removed");
+      return;
+    }
+
+    const nextDocuments = (student.documents || []).filter((_, docIndex) => docIndex !== index);
+    await updateStudent({ documents: nextDocuments }, "Document removed");
+  }
   async function saveOverview() {
     await updateStudent(
       {
@@ -699,39 +736,87 @@ export default function StudentProfile() {
 
           {activeTab === "documents" && (
             <SectionCard title="Documents">
-              <div className="mb-4 flex justify-end">
+              <div className="mb-5 rounded-2xl border border-cyan-100 bg-cyan-50 p-4 text-sm text-cyan-900">
+                Documents approved from student requests are added here automatically. Admin can also upload extra student documents manually.
+              </div>
+
+              <div className="mb-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+                <label className="block">
+                  <span className="mb-2 block text-sm font-semibold text-gray-700">
+                    Document Option
+                  </span>
+                  <select
+                    value={selectedDocumentType}
+                    onChange={(event) => setSelectedDocumentType(event.target.value)}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm text-gray-900 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                  >
+                    {documentTypes.length === 0 ? (
+                      <option value="">No document options added</option>
+                    ) : null}
+                    {documentTypes.map((type) => (
+                      <option key={type._id || type.name} value={type.name}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
                 <button
                   onClick={() => documentInputRef.current?.click()}
-                  disabled={uploadingDocument}
-                  className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm transition-colors hover:bg-gray-50 disabled:opacity-60"
+                  disabled={uploadingDocument || !selectedDocumentType}
+                  className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Upload className="h-4 w-4" />
-                  {uploadingDocument ? "Uploading..." : "Upload Document"}
+                  {uploadingDocument ? "Uploading..." : "Upload Student Document"}
                 </button>
               </div>
 
               {student.documents?.length ? (
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {student.documents.map((doc, index) => (
                     <div
-                      key={index}
-                      className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
+                      key={doc.requestId || doc.fileUrl || index}
+                      className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                     >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {doc.name || `Document ${index + 1}`}
-                        </p>
-                        <p className="text-sm text-gray-500">{doc.type || "File"}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-semibold text-gray-900">
+                            {doc.name || `Document ${index + 1}`}
+                          </p>
+                          <p className="mt-1 text-xs text-gray-500">
+                            {doc.type || "File"} {doc.date ? `- ${doc.date}` : ""}
+                          </p>
+                          {doc.requestId ? (
+                            <span className="mt-2 inline-flex rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">
+                              Approved request
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
-                      {doc.fileUrl ? (
-                        <a href={doc.fileUrl} target="_blank" rel="noreferrer" className="text-sm font-medium text-[#C3292D] hover:underline">
-                          View
-                        </a>
-                      ) : (
-                        <button className="text-sm font-medium text-[#C3292D] hover:underline">
-                          View
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {doc.fileUrl ? (
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                          >
+                            <Download className="h-4 w-4" />
+                            View
+                          </a>
+                        ) : null}
+                        <button
+                          onClick={() => removeDocument(doc, index)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Remove
                         </button>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>

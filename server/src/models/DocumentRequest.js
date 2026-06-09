@@ -29,6 +29,7 @@ const documentRequestSchema = new mongoose.Schema(
     resourceType: String,
     adminNotes: String,
     approvedAt: Date,
+    resolvedAt: Date,
   },
   { timestamps: true }
 );

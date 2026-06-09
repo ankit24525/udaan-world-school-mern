@@ -1,6 +1,8 @@
 import DocumentRequest, { DocumentType } from "../models/DocumentRequest.js";
 import Student from "../models/Student.js";
 
+const ADMIN_REQUEST_RETENTION_MS = 30 * 60 * 1000;
+
 const defaultDocumentTypes = [
   "Transfer Certificate",
   "Bonafide Certificate",
@@ -80,6 +82,32 @@ async function findStudentByRegistrationAndDob(registrationNo, dob) {
   });
 
   return possibleStudents.find((student) => normalizeDate(student.dob) === cleanDob) || null;
+}
+
+async function attachApprovedDocumentToStudent(request) {
+  if (!request.student || !request.fileUrl) return;
+
+  const student = await Student.findById(request.student);
+  if (!student) return;
+
+  const documents = Array.isArray(student.documents) ? student.documents : [];
+  const alreadyExists = documents.some(
+    (document) => document.fileUrl === request.fileUrl || document.requestId === String(request._id)
+  );
+
+  if (alreadyExists) return;
+
+  documents.push({
+    name: request.fileName || request.documentType || "Approved Document",
+    size: "",
+    date: new Date().toISOString().slice(0, 10),
+    type: request.documentType || request.resourceType || "Document",
+    fileUrl: request.fileUrl,
+    requestId: String(request._id),
+  });
+
+  student.documents = documents;
+  await student.save();
 }
 
 export async function getDocumentTypes(req, res) {
@@ -197,7 +225,15 @@ export async function getStudentDocumentRequests(req, res) {
 }
 
 export async function listDocumentRequests(req, res) {
-  const requests = await DocumentRequest.find()
+  const hideBefore = new Date(Date.now() - ADMIN_REQUEST_RETENTION_MS);
+  const requests = await DocumentRequest.find({
+    $or: [
+      { status: "pending" },
+      { resolvedAt: { $exists: false } },
+      { resolvedAt: null },
+      { resolvedAt: { $gt: hideBefore } },
+    ],
+  })
     .populate("student", "name className section studentId admissionNo dob")
     .sort({ createdAt: -1 });
 
@@ -234,10 +270,18 @@ export async function updateDocumentRequest(req, res) {
 
   Object.assign(request, update);
 
+  if (["approved", "rejected"].includes(request.status)) {
+    request.resolvedAt = request.resolvedAt || new Date();
+  }
+
   if (request.status === "approved") {
     request.approvedAt = request.approvedAt || new Date();
   }
 
   await request.save();
+
+  if (request.status === "approved") {
+    await attachApprovedDocumentToStudent(request);
+  }
   res.json(request);
 }

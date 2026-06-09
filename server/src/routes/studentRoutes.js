@@ -1,7 +1,40 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import Student from "../models/Student.js";
 
 const router = Router();
+
+function normalizeStudentDocument(value = {}) {
+  return {
+    name: String(value?.name || "Document").trim(),
+    size: String(value?.size || "").trim(),
+    date: String(value?.date || new Date().toISOString().slice(0, 10)).trim(),
+    type: String(value?.type || "Document").trim(),
+    fileUrl: String(value?.fileUrl || "").trim(),
+    requestId: String(value?.requestId || "").trim(),
+    source: String(value?.source || "Admin Upload").trim(),
+    publicId: String(value?.publicId || "").trim(),
+    resourceType: String(value?.resourceType || "").trim(),
+  };
+}
+
+function toObjectId(id) {
+  return new mongoose.Types.ObjectId(id);
+}
+
+function serializeStudent(student) {
+  if (!student) return null;
+  return {
+    ...student,
+    _id: String(student._id),
+    documents: Array.isArray(student.documents)
+      ? student.documents.map((document) => ({
+          ...document,
+          _id: document?._id ? String(document._id) : "",
+        }))
+      : [],
+  };
+}
 
 // ✅ GET STUDENTS (WITH FILTER)
 router.get("/", async (req, res) => {
@@ -70,9 +103,77 @@ router.post("/", async (req, res) => {
   }
 });
 
+
+// ✅ ADD STUDENT DOCUMENT
+router.post("/:id/documents", async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const document = normalizeStudentDocument(req.body);
+
+    if (!document.fileUrl) {
+      return res.status(400).json({ message: "Uploaded file URL is missing" });
+    }
+
+    const result = await Student.collection.findOneAndUpdate(
+      { _id: toObjectId(req.params.id) },
+      { $push: { documents: { _id: new mongoose.Types.ObjectId(), ...document } } },
+      { returnDocument: "after" }
+    );
+
+    res.status(201).json(serializeStudent(result.value || result));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ✅ DELETE STUDENT DOCUMENT
+router.delete("/:id/documents/:documentId", async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const result = await Student.collection.findOneAndUpdate(
+      { _id: toObjectId(req.params.id) },
+      { $pull: { documents: { _id: toObjectId(req.params.documentId) } } },
+      { returnDocument: "after" }
+    );
+
+    res.json(serializeStudent(result.value || result));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // ✅ UPDATE
 router.put("/:id", async (req, res) => {
   try {
+    if (Array.isArray(req.body?.documents)) {
+      const documents = req.body.documents.map((document) => ({
+        _id: document?._id ? toObjectId(document._id) : new mongoose.Types.ObjectId(),
+        ...normalizeStudentDocument(document),
+      }));
+
+      const result = await Student.collection.findOneAndUpdate(
+        { _id: toObjectId(req.params.id) },
+        { $set: { documents } },
+        { returnDocument: "after" }
+      );
+
+      if (!result.value && !result?._id) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      return res.json(serializeStudent(result.value || result));
+    }
+
     const updated = await Student.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -92,13 +193,13 @@ router.put("/:id", async (req, res) => {
 // ✅ GET SINGLE STUDENT
 router.get("/:id", async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
+    const student = await Student.collection.findOne({ _id: toObjectId(req.params.id) });
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    res.json(student);
+    res.json(serializeStudent(student));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
