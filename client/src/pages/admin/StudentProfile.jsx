@@ -130,6 +130,21 @@ export default function StudentProfile() {
     );
   }
 
+  async function saveAcademic() {
+    await updateStudent(
+      {
+        studentId: student.studentId,
+        admissionNo: student.admissionNo,
+        className: student.className,
+        section: student.section,
+        rollNumber: student.rollNumber,
+        academicYear: student.academicYear,
+        house: student.house,
+      },
+      "Academic details updated"
+    );
+  }
+
   async function addPayment(payment) {
     await updateStudent({ payments: [...(student.payments || []), payment] });
   }
@@ -236,12 +251,18 @@ export default function StudentProfile() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <button className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-gray-50">
+                  <button
+                    onClick={() => setActiveTab("overview")}
+                    className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-gray-50"
+                  >
                     <Edit className="h-4 w-4" />
                     Edit Profile
                   </button>
 
-                  <button className="flex items-center gap-2 rounded-lg bg-[#C3292D] px-4 py-2 text-white transition-colors hover:bg-[#A01F23]">
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-2 rounded-lg bg-[#C3292D] px-4 py-2 text-white transition-colors hover:bg-[#A01F23]"
+                  >
                     <Download className="h-4 w-4" />
                     Generate Report
                   </button>
@@ -354,12 +375,41 @@ export default function StudentProfile() {
           {activeTab === "academic" && (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <SectionCard title="Academic Details">
-                <Row label="Class" value={student.className} />
-                <Row label="Section" value={student.section} />
-                <Row label="Roll Number" value={student.rollNumber} />
-                <Row label="Admission Number" value={student.admissionNo} />
-                <Row label="Academic Year" value={student.academicYear} />
-                <Row label="House" value={student.house} />
+                <EditableRow
+                  label="Student ID / Registration No"
+                  value={student.studentId || ""}
+                  onChange={(value) => updateField("studentId", value)}
+                />
+                <EditableRow
+                  label="Admission Number"
+                  value={student.admissionNo || ""}
+                  onChange={(value) => updateField("admissionNo", value)}
+                />
+                <EditableRow
+                  label="Class"
+                  value={student.className || ""}
+                  onChange={(value) => updateField("className", value)}
+                />
+                <EditableRow
+                  label="Section"
+                  value={student.section || ""}
+                  onChange={(value) => updateField("section", value)}
+                />
+                <EditableRow
+                  label="Roll Number"
+                  value={student.rollNumber || ""}
+                  onChange={(value) => updateField("rollNumber", value)}
+                />
+                <EditableRow
+                  label="Academic Year"
+                  value={student.academicYear || ""}
+                  onChange={(value) => updateField("academicYear", value)}
+                />
+                <EditableRow
+                  label="House"
+                  value={student.house || ""}
+                  onChange={(value) => updateField("house", value)}
+                />
               </SectionCard>
 
               <SectionCard title="Performance Snapshot">
@@ -368,6 +418,15 @@ export default function StudentProfile() {
                 <Stat title="Rank" value={student.rank || "N/A"} tone="amber" />
                 <Stat title="Subjects" value={student.subjects?.length || 0} tone="red" />
               </SectionCard>
+
+              <div className="md:col-span-2 flex justify-end">
+                <button
+                  onClick={saveAcademic}
+                  className="rounded-lg bg-[#C3292D] px-4 py-2 text-white transition-colors hover:bg-[#A01F23]"
+                >
+                  Save Academic Details
+                </button>
+              </div>
 
               <div className="md:col-span-2">
                 <SectionCard title="Subjects">

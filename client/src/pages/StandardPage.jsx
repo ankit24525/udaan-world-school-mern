@@ -222,6 +222,100 @@ function normalizeSpecialPageRoutes(pageKey, page) {
   return page;
 }
 
+function normalizeResultsSections(page = {}, resultItems = []) {
+  if (!Array.isArray(page?.meta?.sections) || !resultItems.length) {
+    return page;
+  }
+
+  const growthItems = resultItems.filter(
+    (item) => (item.meta?.section || "growth") === "growth"
+  );
+  const performerItems = resultItems.filter(
+    (item) => item.meta?.section === "performer" || item.meta?.topperName || item.imageUrl
+  );
+
+  const sortedGrowthItems = [...growthItems].sort(
+    (a, b) => Number(b.meta?.highestResult || b.meta?.passPercentage || 0) - Number(a.meta?.highestResult || a.meta?.passPercentage || 0)
+  );
+  const sortedByTopperScore = [...performerItems].sort(
+    (a, b) => Number(b.meta?.topperPercentage || 0) - Number(a.meta?.topperPercentage || 0)
+  );
+
+  const averagePassRate = growthItems.length
+    ? growthItems.reduce(
+        (sum, item) => sum + Number(item.meta?.highestResult || item.meta?.passPercentage || 0),
+        0
+      ) / growthItems.length
+    : 0;
+  const bestPassRate = growthItems.length
+    ? Math.max(
+        ...growthItems.map((item) =>
+          Number(item.meta?.highestResult || item.meta?.passPercentage || 0)
+        )
+      )
+    : 0;
+  const bestTopperScore = performerItems.length
+    ? Math.max(...performerItems.map((item) => Number(item.meta?.topperPercentage || 0)))
+    : 0;
+  const totalToppers = performerItems.length;
+
+  return {
+    ...page,
+    meta: {
+      ...(page.meta || {}),
+      sections: page.meta.sections.map((section) => {
+        if (section.id === "results-metrics") {
+          return {
+            ...section,
+            items: [
+              { title: `${bestPassRate.toFixed(1)}%`, subtitle: "Best Pass Rate" },
+              { title: `${averagePassRate.toFixed(1)}%`, subtitle: "Average Pass Rate" },
+              { title: `${bestTopperScore.toFixed(1)}%`, subtitle: "Topper Score" },
+              { title: `${totalToppers}+`, subtitle: "Recorded Toppers" },
+            ],
+          };
+        }
+
+        if (section.id === "star-performers") {
+          return {
+            ...section,
+            items: sortedByTopperScore.slice(0, 3).map((item) => ({
+              title: item.meta?.topperName || item.meta?.className || item.title,
+              subtitle: [item.meta?.className, item.meta?.stream, item.meta?.year]
+                .filter(Boolean)
+                .join(" • "),
+              text: item.meta?.topperPercentage
+                ? `${Number(item.meta.topperPercentage).toFixed(1)}%`
+                : item.meta?.passPercentage
+                  ? `${Number(item.meta.passPercentage).toFixed(1)}%`
+                  : "",
+              image:
+                item.imageUrl ||
+                section.items?.find((sectionItem) => sectionItem?.image)?.image ||
+                "",
+              icon: "Topper",
+            })),
+          };
+        }
+
+        if (section.id === "results-growth") {
+          return {
+            ...section,
+            items: sortedGrowthItems.slice(0, 6).map((item) => ({
+              label: [item.meta?.year, item.meta?.className || item.category]
+                .filter(Boolean)
+                .join(" • ") || "--",
+              value: `${Number(item.meta?.highestResult || item.meta?.passPercentage || 0).toFixed(1)}% Highest Result`,
+            })),
+          };
+        }
+
+        return section;
+      }),
+    },
+  };
+}
+
 function isLegacyGeneratedSection(section) {
   return (
     (section.type === "text" && section.title === "Overview") ||
@@ -366,10 +460,13 @@ export default function StandardPage({ pageKey }) {
   useEffect(() => {
     let isMounted = true;
 
-    function applyPageTransforms(nextPage) {
-      return normalizeSpecialPageRoutes(
-        pageKey,
-        normalizeDirectorPageCopy(pageKey, nextPage)
+    function applyPageTransforms(nextPage, liveResults = []) {
+      return normalizeResultsSections(
+        normalizeSpecialPageRoutes(
+          pageKey,
+          normalizeDirectorPageCopy(pageKey, nextPage)
+        ),
+        pageKey === "results" ? liveResults : []
       );
     }
 
@@ -389,13 +486,23 @@ export default function StandardPage({ pageKey }) {
                 params: { type: "gallery", published: "true" },
               })
             : Promise.resolve(null),
+          results: pageKey === "results"
+            ? api.get("/content", {
+                params: { type: "result", published: "true" },
+              })
+            : Promise.resolve(null),
         };
 
-        const [pageRes, eventRes, galleryRes] = await Promise.all([
+        const [pageRes, eventRes, galleryRes, resultRes] = await Promise.all([
           requests.page,
           requests.events,
           requests.gallery,
+          requests.results,
         ]);
+
+        const liveResults = Array.isArray(resultRes?.data)
+          ? resultRes.data.filter((item) => item.published !== false)
+          : [];
 
         const dbPage = Array.isArray(pageRes.data)
           ? pageRes.data.find((item) => item.key === pageKey && item.published !== false)
@@ -404,27 +511,32 @@ export default function StandardPage({ pageKey }) {
         if (!isMounted) return;
 
         if (dbPage) {
-          setPage(applyPageTransforms({
-            eyebrow: dbPage.eyebrow || fallbackPage.eyebrow,
-            title: dbPage.title || fallbackPage.title,
-            image: dbPage.imageUrl || fallbackPage.image,
-            body: dbPage.body || fallbackPage.body,
-            highlights:
-              Array.isArray(dbPage.highlights) && dbPage.highlights.length
-                ? dbPage.highlights
-                : fallbackPage.highlights,
-            meta: {
-              ...(fallbackPage.meta || {}),
-              ...(dbPage.meta || {}),
-              sections: mergeSectionsForPage(
-                pageKey,
-                dbPage.meta?.sections,
-                fallbackPage.meta?.sections
-              ),
-            },
-          }));
+          setPage(
+            applyPageTransforms(
+              {
+                eyebrow: dbPage.eyebrow || fallbackPage.eyebrow,
+                title: dbPage.title || fallbackPage.title,
+                image: dbPage.imageUrl || fallbackPage.image,
+                body: dbPage.body || fallbackPage.body,
+                highlights:
+                  Array.isArray(dbPage.highlights) && dbPage.highlights.length
+                    ? dbPage.highlights
+                    : fallbackPage.highlights,
+                meta: {
+                  ...(fallbackPage.meta || {}),
+                  ...(dbPage.meta || {}),
+                  sections: mergeSectionsForPage(
+                    pageKey,
+                    dbPage.meta?.sections,
+                    fallbackPage.meta?.sections
+                  ),
+                },
+              },
+              liveResults
+            )
+          );
         } else {
-          setPage(applyPageTransforms(fallbackPage));
+          setPage(applyPageTransforms(fallbackPage, liveResults));
         }
 
         if (pageKey === "events") {

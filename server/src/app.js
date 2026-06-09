@@ -11,7 +11,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import classConfigRoutes from "./routes/classConfigRoutes.js";
 import facilityRoutes from "./routes/facilityRoutes.js";
-import scholarshipRoutes from "./routes/scholarshipRoutes.js";
+import documentRequestRoutes from "./routes/documentRequestRoutes.js";
 
 import { getUser } from "./middleware/getUser.js";
 
@@ -57,7 +57,7 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/facilities", facilityRoutes);
-app.use("/api/scholarships", scholarshipRoutes);
+app.use("/api/document-requests", documentRequestRoutes);
 
 
 // ✅ Root route

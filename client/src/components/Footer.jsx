@@ -17,7 +17,6 @@ const aboutLinks = [
 const helpLinks = [
   ["Admissions", "/admission-procedure"],
   ["Fee Structure", "/fee-structure"],
-  ["Scholarships", "/scholarships"],
   ["Careers", "/careers"],
   ["Blogs", "/blogs"],
 ];

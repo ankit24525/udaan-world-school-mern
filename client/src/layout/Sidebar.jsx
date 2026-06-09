@@ -68,6 +68,11 @@ export default function Sidebar() {
           {!collapsed && "Facilities"}
         </NavLink>
 
+        <NavLink to="/admin/documents" className={linkClass}>
+          <FileText size={18} />
+          {!collapsed && "Documents"}
+        </NavLink>
+
         <NavLink to="/admin/content" className={linkClass}>
           <FileText size={18} />
           {!collapsed && "Content"}

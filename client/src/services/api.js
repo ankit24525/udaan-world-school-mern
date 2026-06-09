@@ -28,7 +28,7 @@ function shouldNotifyPublicRefresh(config = {}) {
     return false;
   }
 
-  return [/^\/?content\b/i, /^\/?facilities\b/i, /^\/?scholarships\b/i].some((pattern) =>
+  return [/^\/?content\b/i, /^\/?facilities\b/i].some((pattern) =>
     pattern.test(url)
   );
 }

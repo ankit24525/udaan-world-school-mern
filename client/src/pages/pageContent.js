@@ -1161,15 +1161,6 @@ export const pageContent = {
       ],
     },
   },
-  scholarships: {
-    eyebrow: "Admissions",
-    title: "Scholarships",
-    body: [
-      "Use this page to explain scholarship rules, eligibility, merit criteria, and financial assistance.",
-      "The content can be made editable in the admin panel.",
-    ],
-    highlights: ["Merit support", "Need-based support", "Eligibility", "Application process"],
-  },
   sportsFacilities: {
     eyebrow: "Facilities",
     title: "Sports Facilities",

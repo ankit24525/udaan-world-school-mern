@@ -20,6 +20,7 @@ import BlogDetail from "./pages/BlogDetail.jsx";
 import BlogsPage from "./pages/BlogPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import CareersPage from "./pages/CareersPage.jsx";
+import DocumentRequestPage from "./pages/DocumentRequestPage.jsx";
 import EventDetailPage from "./pages/EventDetailPage.jsx";
 import FeeStructurePage from "./pages/FeeStructurePage.jsx";
 import StandardPage from "./pages/StandardPage.jsx";
@@ -31,6 +32,7 @@ import AdmissionsManagement from "./pages/admin/AdmissionsManagement.jsx";
 import Blogs from "./pages/admin/Blogs.jsx";
 import ClassManagement from "./pages/admin/ClassManagement";
 import ContentManagement from "./pages/admin/ContentManagement.jsx";
+import DocumentRequestsManagement from "./pages/admin/DocumentRequestsManagement.jsx";
 import FacilitiesManagement from "./pages/admin/FacilitiesManagement";
 import GalleryManagement from "./pages/admin/GalleryManagement.jsx";
 import ManageEnquiries from "./pages/admin/ManageEnquiries.jsx";
@@ -83,6 +85,7 @@ export default function App() {
           <Route path="enquiries" element={<ManageEnquiries />} />
           <Route path="gallery" element={<GalleryManagement />} />
           <Route path="facilities" element={<FacilitiesManagement />} />
+          <Route path="documents" element={<DocumentRequestsManagement />} />
           <Route path="settings" element={<Settings />} />
           <Route path="blogs" element={<Blogs />} />
         </Route>
@@ -114,11 +117,11 @@ export default function App() {
           <Route path="safe-campus" element={<StandardPage pageKey="safeCampus" />} />
           <Route path="holistic-growth" element={<StandardPage pageKey="coCurricular" />} />
           <Route path="co-curricular-facilities" element={<StandardPage pageKey="coCurricular" />} />
-          <Route path="scholarships" element={<StandardPage pageKey="scholarships" />} />
           <Route path="sports-facilities" element={<StandardPage pageKey="sportsFacilities" />} />
           <Route path="library" element={<StandardPage pageKey="library" />} />
           <Route path="transport" element={<StandardPage pageKey="transport" />} />
           <Route path="cafeteria" element={<StandardPage pageKey="cafeteria" />} />
+          <Route path="documents" element={<DocumentRequestPage />} />
           <Route path="photo-gallery" element={<StandardPage pageKey="photoGallery" />} />
           <Route path="video-gallery" element={<StandardPage pageKey="videoGallery" />} />
           <Route path="events-gallery" element={<StandardPage pageKey="eventsGallery" />} />

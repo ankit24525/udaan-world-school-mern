@@ -10,6 +10,10 @@ export default function StudentImportModal({ onClose, onSuccess }) {
     className: "",
     section: "",
     rollNumber: "",
+    studentId: "",
+    admissionNo: "",
+    dob: "",
+    phone: "",
     email: "",
   });
   const [loading, setLoading] = useState(false);
@@ -35,7 +39,12 @@ export default function StudentImportModal({ onClose, onSuccess }) {
         className: row[mapping.className],
         section: row[mapping.section]?.toUpperCase(),
         rollNumber: row[mapping.rollNumber],
+        studentId: row[mapping.studentId],
+        admissionNo: row[mapping.admissionNo],
+        dob: row[mapping.dob],
+        phone: row[mapping.phone],
         email: row[mapping.email],
+        status: "Active",
       }))
       .filter((s) => s.name && s.className);
 
@@ -68,7 +77,7 @@ export default function StudentImportModal({ onClose, onSuccess }) {
         {headers.length > 0 && (
           <div className="grid grid-cols-2 gap-4 mt-4">
 
-            {["name", "className", "section", "rollNumber", "email"].map((field) => (
+            {["name", "className", "section", "rollNumber", "studentId", "admissionNo", "dob", "phone", "email"].map((field) => (
               <div key={field}>
                 <label className="text-sm">{field}</label>
                 <select
@@ -77,7 +86,7 @@ export default function StudentImportModal({ onClose, onSuccess }) {
                     setMapping({ ...mapping, [field]: e.target.value })
                   }
                 >
-                  <option>Select column</option>
+                  <option value="">Select column</option>
                   {headers.map((h) => (
                     <option key={h}>{h}</option>
                   ))}

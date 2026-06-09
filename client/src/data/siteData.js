@@ -77,6 +77,7 @@ export const navItems = [
       { label: "Results", href: "/results" },
       { label: "Smart Classes", href: "/smart-classes" },
       { label: "Labs", href: "/labs" },
+      { label: "Documents", href: "/documents" },
     ],
   },
   {
