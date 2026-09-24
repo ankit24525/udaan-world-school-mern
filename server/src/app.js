@@ -24,7 +24,7 @@ const allowedOrigins = [
   "https://udaanworldschool.in",            // your frontend domain
   "https://www.udaanworldschool.in",        // optional
   process.env.CLIENT_URL                    // fallback (optional)
-];
+].filter(Boolean);
 
 // ✅ CORS setup (robust)
 app.use(cors({
@@ -32,7 +32,10 @@ app.use(cors({
     // allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
       return callback(null, true);
     } else {
       return callback(new Error("❌ Not allowed by CORS: " + origin));

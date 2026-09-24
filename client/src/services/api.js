@@ -18,6 +18,7 @@ function normalizeApiBaseUrl(value) {
 const api = axios.create({
   baseURL: normalizeApiBaseUrl(import.meta.env.VITE_API_URL),
   withCredentials: true,
+  timeout: 8000,
 });
 
 function shouldNotifyPublicRefresh(config = {}) {
